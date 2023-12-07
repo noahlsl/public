@@ -3,7 +3,7 @@ package consts
 import (
 	"errors"
 
-	"gitlab.galaxy123.cloud/base/public/helper/strx"
+	"github.com/noahlsl/public/helper/strx"
 )
 
 var (

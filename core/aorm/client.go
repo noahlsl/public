@@ -5,8 +5,8 @@ import (
 	"github.com/doug-martin/goqu/v9"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/noahlsl/public/core/dbx"
 	"github.com/pkg/errors"
-	"gitlab.galaxy123.cloud/base/public/core/dbx"
 )
 
 type Client struct {

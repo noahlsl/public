@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/noahlsl/public/helper/slicex"
 	"github.com/pkg/errors"
-	"gitlab.galaxy123.cloud/base/public/helper/slicex"
 )
 
 type table interface {

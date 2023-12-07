@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"gitlab.galaxy123.cloud/base/public/models/jwt"
+	"github.com/noahlsl/public/models/jwt"
 )
 
 func TestNewClaims(t *testing.T) {

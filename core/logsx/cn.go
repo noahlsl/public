@@ -3,8 +3,8 @@ package logsx
 import (
 	"net/http"
 
+	"github.com/noahlsl/public/helper/ipx"
 	"github.com/rs/zerolog"
-	"gitlab.galaxy123.cloud/base/public/helper/ipx"
 )
 
 type GinCn struct {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/goccy/go-json"
-	"gitlab.galaxy123.cloud/base/public/constants/consts"
+	"github.com/noahlsl/public/constants/consts"
 	clientv3 "go.etcd.io/etcd/client/v3"
 )
 

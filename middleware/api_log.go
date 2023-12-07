@@ -3,8 +3,8 @@ package middleware
 import (
 	"net/http"
 
+	"github.com/noahlsl/public/core/logsx"
 	"github.com/zeromicro/go-zero/core/logx"
-	"gitlab.galaxy123.cloud/base/public/core/logsx"
 )
 
 type LogMiddleware struct {

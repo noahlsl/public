@@ -1,6 +1,6 @@
 package anyx
 
-import "gitlab.galaxy123.cloud/base/public/helper/slicex"
+import "github.com/noahlsl/public/helper/slicex"
 
 func Any2Any(in any) []any {
 	slice, ok := slicex.CreateAnyTypeSlice(in)

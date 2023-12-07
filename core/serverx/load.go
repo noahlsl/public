@@ -6,7 +6,7 @@ import (
 	"github.com/goccy/go-json"
 	clientv3 "go.etcd.io/etcd/client/v3"
 
-	"gitlab.galaxy123.cloud/base/public/constants/consts"
+	"github.com/noahlsl/public/constants/consts"
 )
 
 func AnyLoad[T any](cli *clientv3.Client, project, env, svc string) T {

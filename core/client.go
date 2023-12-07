@@ -1,8 +1,8 @@
 package orm
 
 import (
-	"gitlab.galaxy123.cloud/base/public/core/aorm"
-	"gitlab.galaxy123.cloud/base/public/core/member"
+	"github.com/noahlsl/public/core/aorm"
+	"github.com/noahlsl/public/core/member"
 )
 
 type Client struct {

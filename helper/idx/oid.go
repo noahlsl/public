@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"time"
 
-	"gitlab.galaxy123.cloud/base/public/helper/randx"
+	"github.com/noahlsl/public/helper/randx"
 )
 
 // GenOid 生成单号

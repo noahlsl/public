@@ -1,7 +1,7 @@
 package member
 
 import (
-	"gitlab.galaxy123.cloud/base/public/core/aorm"
+	"github.com/noahlsl/public/core/aorm"
 )
 
 type ModelMember struct {

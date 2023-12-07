@@ -5,7 +5,7 @@ import (
 	"reflect"
 
 	"github.com/goccy/go-json"
-	"gitlab.galaxy123.cloud/base/public/helper/strx"
+	"github.com/noahlsl/public/helper/strx"
 )
 
 func StructToMap(in interface{}) (map[string]interface{}, error) {

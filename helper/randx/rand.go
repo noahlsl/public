@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"gitlab.galaxy123.cloud/base/public/constants/enums"
+	"github.com/noahlsl/public/constants/enums"
 )
 
 // GetRand 随机字符串

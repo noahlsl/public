@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/noahlsl/public/constants/consts"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/core/trace"
-	"gitlab.galaxy123.cloud/base/public/constants/consts"
 )
 
 type TokenMiddleware struct {

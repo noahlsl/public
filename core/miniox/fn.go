@@ -4,16 +4,16 @@ import (
 	"context"
 	"fmt"
 	"github.com/minio/minio-go/v7"
-	"gitlab.galaxy123.cloud/base/public/helper/idx"
+	"github.com/noahlsl/public/helper/idx"
 	"io"
 	"net/http"
 	"net/url"
 	"path/filepath"
 	"time"
 
+	"github.com/noahlsl/public/constants/consts"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
-	"gitlab.galaxy123.cloud/base/public/constants/consts"
 )
 
 type Client struct {

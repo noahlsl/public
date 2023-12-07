@@ -3,11 +3,11 @@ package middleware
 import (
 	"context"
 	"fmt"
+	"github.com/noahlsl/public/constants/consts"
+	"github.com/noahlsl/public/constants/enums"
+	"github.com/noahlsl/public/helper/md5x"
+	"github.com/noahlsl/public/models/res"
 	"github.com/zeromicro/go-zero/core/stores/redis"
-	"gitlab.galaxy123.cloud/base/public/constants/consts"
-	"gitlab.galaxy123.cloud/base/public/constants/enums"
-	"gitlab.galaxy123.cloud/base/public/helper/md5x"
-	"gitlab.galaxy123.cloud/base/public/models/res"
 	"net/http"
 	"strings"
 )

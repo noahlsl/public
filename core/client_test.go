@@ -6,7 +6,7 @@ import (
 	"github.com/doug-martin/goqu/v9"
 	"testing"
 
-	"gitlab.galaxy123.cloud/base/public/core/member"
+	"github.com/noahlsl/public/core/member"
 )
 
 func TestNewClient(t *testing.T) {

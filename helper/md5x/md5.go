@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"gitlab.galaxy123.cloud/base/public/helper/strx"
+	"github.com/noahlsl/public/helper/strx"
 )
 
 /** 加密方式 **/

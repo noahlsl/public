@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"gitlab.galaxy123.cloud/base/public/constants/enums"
-	"gitlab.galaxy123.cloud/base/public/models/res"
+	"github.com/noahlsl/public/constants/enums"
+	"github.com/noahlsl/public/models/res"
 )
 
 type TimeoutMiddleware struct {

@@ -1,13 +1,13 @@
 package middleware
 
 import (
-	"gitlab.galaxy123.cloud/base/public/constants/enums"
-	"gitlab.galaxy123.cloud/base/public/models/res"
+	"github.com/noahlsl/public/constants/enums"
+	"github.com/noahlsl/public/models/res"
 	"net/http"
 	"time"
 
 	"github.com/juju/ratelimit"
-	"gitlab.galaxy123.cloud/base/public/constants/consts"
+	"github.com/noahlsl/public/constants/consts"
 )
 
 type LimitMiddleware struct {

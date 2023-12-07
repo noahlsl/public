@@ -9,10 +9,10 @@ import (
 	_ "github.com/doug-martin/goqu/v9/dialect/mysql"
 	"github.com/doug-martin/goqu/v9/exp"
 	"github.com/jmoiron/sqlx"
+	"github.com/noahlsl/public/helper/slicex"
+	"github.com/noahlsl/public/helper/sqx"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
-	"gitlab.galaxy123.cloud/base/public/helper/slicex"
-	"gitlab.galaxy123.cloud/base/public/helper/sqx"
 )
 
 type Dataset[T BaseModel] struct {

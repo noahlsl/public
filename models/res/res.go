@@ -5,7 +5,7 @@ import (
 
 	"github.com/goccy/go-json"
 	"github.com/golang-module/dongle"
-	"gitlab.galaxy123.cloud/base/public/helper/strx"
+	"github.com/noahlsl/public/helper/strx"
 )
 
 type Res struct {

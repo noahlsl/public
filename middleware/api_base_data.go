@@ -6,10 +6,10 @@ import (
 	"github.com/goccy/go-json"
 	"net/http"
 
+	"github.com/noahlsl/public/helper/bytex"
+	"github.com/noahlsl/public/helper/ipx"
+	"github.com/noahlsl/public/helper/strx"
 	"github.com/zeromicro/go-zero/core/stores/redis"
-	"gitlab.galaxy123.cloud/base/public/helper/bytex"
-	"gitlab.galaxy123.cloud/base/public/helper/ipx"
-	"gitlab.galaxy123.cloud/base/public/helper/strx"
 )
 
 type BaseDataMiddleware struct {

@@ -3,8 +3,8 @@ package logsx
 import (
 	"net/http"
 
+	"github.com/noahlsl/public/helper/ipx"
 	"github.com/zeromicro/go-zero/core/logx"
-	"gitlab.galaxy123.cloud/base/public/helper/ipx"
 )
 
 func GetFields(r *http.Request) []logx.LogField {

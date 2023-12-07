@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/noahlsl/public/helper/idx"
 	"github.com/zeromicro/go-zero/core/trace"
-	"gitlab.galaxy123.cloud/base/public/helper/idx"
 )
 
 func TraceMiddleware(next http.HandlerFunc) http.HandlerFunc {

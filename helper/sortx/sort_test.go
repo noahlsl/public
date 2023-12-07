@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"testing"
 
-	"gitlab.galaxy123.cloud/base/public/helper/randx"
+	"github.com/noahlsl/public/helper/randx"
 )
 
 type P struct {

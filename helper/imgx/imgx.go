@@ -4,7 +4,7 @@ import (
 	"mime/multipart"
 	"path"
 
-	"gitlab.galaxy123.cloud/base/public/constants/consts"
+	"github.com/noahlsl/public/constants/consts"
 )
 
 func ImgCheck(file multipart.File, header *multipart.FileHeader) error {

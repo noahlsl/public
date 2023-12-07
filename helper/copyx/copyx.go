@@ -2,8 +2,8 @@ package copyx
 
 import (
 	"github.com/goccy/go-json"
+	"github.com/noahlsl/public/helper/slicex"
 	"github.com/young2j/gocopy"
-	"gitlab.galaxy123.cloud/base/public/helper/slicex"
 )
 
 func CopyOne[T any](data interface{}) T {
