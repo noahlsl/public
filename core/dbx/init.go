@@ -3,12 +3,14 @@ package dbx
 import (
 	"database/sql"
 	"fmt"
+	"go.uber.org/zap"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	zeroSqlx "github.com/zeromicro/go-zero/core/stores/sqlx"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"moul.io/zapgorm2"
 )
 
 func (c *Cfg) NewClient() zeroSqlx.SqlConn {
@@ -94,16 +96,17 @@ func MustDB(dsn string, poolSize ...int) *sqlx.DB {
 	return db
 }
 
-func MustGDB(dsn string, level ...string) *gorm.DB {
+func MustGDB(dsn string, l *zap.Logger) *gorm.DB {
+	cfg := &gorm.Config{}
+	if l != nil {
+		logger := zapgorm2.New(l)
+		logger.SetAsDefault()
+		cfg = &gorm.Config{Logger: logger}
+	}
 	// 打开 MySQL 数据库连接。
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dsn), cfg)
 	if err != nil {
 		panic("failed to connect database")
 	}
-
-	if len(level) > 0 && level[0] == "debug" {
-		db = db.Debug()
-	}
-
 	return db
 }
