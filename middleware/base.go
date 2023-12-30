@@ -1,13 +1,12 @@
 package middleware
 
 import (
-	"github.com/goccy/go-json"
-	"gitlab.jusha.icu/mall/common/values"
 	"net/http"
 	"strings"
 
 	"github.com/noahlsl/public/constants/consts"
 	"github.com/noahlsl/public/helper/ipx"
+	"github.com/goccy/go-json"
 )
 
 func BaseMiddleware(next http.HandlerFunc) http.HandlerFunc {
@@ -33,7 +32,7 @@ func BaseMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		m["driver"] = driver
 		siteCode := r.Header.Get("site_code")
 		if siteCode == "" {
-			siteCode = values.DefaultSiteCode
+			siteCode = "mall"
 		}
 		m["site_code"] = siteCode
 		m["debug"] = r.Header.Get("debug")
