@@ -3,6 +3,7 @@ package session
 import (
 	"context"
 	"fmt"
+	"github.com/noahlsl/public/helper/strx"
 	"time"
 
 	"github.com/noahlsl/public/constants/consts"
@@ -51,7 +52,7 @@ func (s *Ses) Login(ctx context.Context, secret string, id interface{}, ex ...in
 	}
 
 	key = fmt.Sprintf(consts.RedisKeyAuth, token)
-	err = s.r.SetexCtx(ctx, key, "", int(accessExpire))
+	err = s.r.SetexCtx(ctx, key, strx.Any2Str(id), int(accessExpire))
 	if err != nil {
 		return "", err
 	}
