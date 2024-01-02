@@ -12,11 +12,11 @@ import (
 func BaseMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		m := map[string]interface{}{}
-		language := r.Header.Get("language")
-		if language == "" {
-			language = consts.ZH
+		lang := r.Header.Get("lang")
+		if lang == "" {
+			lang = consts.ZH
 		}
-		m["language"] = language
+		m["lang"] = lang
 		m["ip"] = httpx.GetRemoteAddr(r)
 
 		driver := r.Header.Get("driver")
@@ -39,12 +39,12 @@ func BaseMiddleware(next http.HandlerFunc) http.HandlerFunc {
 func BaseCtxMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		language := r.Header.Get("language")
-		if language == "" {
-			language = consts.ZH
+		lang := r.Header.Get("lang")
+		if lang == "" {
+			lang = consts.ZH
 		}
 
-		ctx = context.WithValue(ctx, "language", language)
+		ctx = context.WithValue(ctx, "lang", lang)
 		ctx = context.WithValue(ctx, "ip", httpx.GetRemoteAddr(r))
 
 		driver := r.Header.Get("driver")
