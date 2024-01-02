@@ -68,9 +68,9 @@ func BaseCtxMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func UniAuth(cfg redis.RedisConf) func(http.Handler) http.Handler {
+func UniAuth(cfg redis.RedisConf) func(http.Handler) http.HandlerFunc {
 	rds := redis.MustNewRedis(cfg)
-	return func(next http.Handler) http.Handler {
+	return func(next http.Handler) http.HandlerFunc {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			token := r.Header.Get("Authorization")
 			if token != "" {
