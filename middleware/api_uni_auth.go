@@ -28,8 +28,9 @@ func (u *UniAuth) Handle(next http.HandlerFunc) http.HandlerFunc {
 				xhttp.JsonBaseResponseCtx(r.Context(), w, xerrors.New(enums.ErrSysTokenExpired, "Login expired"))
 				return
 			}
+		} else {
+			next(w, r)
 		}
-		next(w, r)
 	}
 }
 
@@ -39,7 +40,6 @@ func (u *UniAuth) UniAuthMiddleware(w http.ResponseWriter, r *http.Request) erro
 		key := fmt.Sprintf(consts.RedisKeyAuth, token)
 		exists, err := u.r.Exists(key)
 		if err != nil || !exists {
-			xhttp.JsonBaseResponseCtx(r.Context(), w, xerrors.New(enums.ErrSysTokenExpired, "Login expired"))
 			return consts.ErrSysTokenExpired
 		}
 	}
