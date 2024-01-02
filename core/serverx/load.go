@@ -10,6 +10,7 @@ import (
 	"github.com/noahlsl/public/constants/consts"
 )
 
+// Deprecated: Please Use AnyLoadYaml
 func AnyLoad[T any](cli *clientv3.Client, project, env, svc string) T {
 
 	var c T

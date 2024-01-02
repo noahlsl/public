@@ -9,6 +9,7 @@ import (
 	clientv3 "go.etcd.io/etcd/client/v3"
 )
 
+// Deprecated: Please Use LoadYaml
 func Load(cli *clientv3.Client, project, env string) *Cfg {
 
 	c := &Cfg{}
