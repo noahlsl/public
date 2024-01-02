@@ -33,3 +33,18 @@ func (u *UniAuth) Handle(next http.HandlerFunc) http.HandlerFunc {
 		next(w, r)
 	}
 }
+
+func (u *UniAuth) UniAuthMiddleware(w http.ResponseWriter, r *http.Request) error {
+	rds := redis.MustNewRedis(u.c)
+	token := r.Header.Get("Authorization")
+	if token != "" {
+		key := fmt.Sprintf(consts.RedisKeyAuth, token)
+		exists, err := rds.Exists(key)
+		if err != nil || !exists {
+			xhttp.JsonBaseResponseCtx(r.Context(), w, xerrors.New(enums.ErrSysTokenExpired, "Login expired"))
+			return consts.ErrSysTokenExpired
+		}
+	}
+
+	return nil
+}
