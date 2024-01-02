@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	AccessExpire = 3600 * 24
+	AccessExpire = int64(3600 * 24)
 )
 
 type Ses struct {
@@ -25,8 +25,12 @@ func NewSes(r *redis.Redis) *Ses {
 	}
 }
 
-func (s *Ses) Login(ctx context.Context, secret string, id interface{}) (string, error) {
+func (s *Ses) Login(ctx context.Context, secret string, id interface{}, ex ...int64) (string, error) {
 
+	accessExpire := AccessExpire
+	if len(ex) > 0 {
+		accessExpire = ex[0]
+	}
 	var token string
 	// 单点登录
 	key := fmt.Sprintf(consts.RedisKeyUid, id)
@@ -42,20 +46,20 @@ func (s *Ses) Login(ctx context.Context, secret string, id interface{}) (string,
 
 	// 生成 jwt 响应
 	now := time.Now().Unix()
-	token, err = jwtx.GenJwtToken(secret, now, AccessExpire, id)
+	token, err = jwtx.GenJwtToken(secret, now, accessExpire, id)
 	if err != nil {
 		return "", err
 	}
 
 	err = s.r.PipelinedCtx(ctx, func(pipe redis.Pipeliner) error {
 		key = fmt.Sprintf(consts.RedisKeyAuth, token)
-		err = pipe.SetEX(ctx, key, "", time.Hour*24).Err()
+		err = pipe.SetEX(ctx, key, "", time.Duration(accessExpire)).Err()
 		if err != nil {
 			return err
 		}
 
 		key = fmt.Sprintf(consts.RedisKeyUid, id)
-		err = pipe.SetEX(ctx, key, token, time.Hour*24).Err()
+		err = pipe.SetEX(ctx, key, token, time.Duration(accessExpire)).Err()
 		if err != nil {
 			return err
 		}
