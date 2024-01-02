@@ -1,6 +1,7 @@
 package strx
 
 import (
+	"fmt"
 	"github.com/goccy/go-json"
 	"reflect"
 	"strconv"
@@ -85,4 +86,11 @@ func B2Map(in []byte) map[string]interface{} {
 	var out = make(map[string]interface{})
 	_ = json.Unmarshal(in, &out)
 	return out
+}
+
+func Any2Str(in any) string {
+	if in == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", in)
 }
