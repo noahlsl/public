@@ -3,6 +3,7 @@ package serverx
 import (
 	"context"
 	"fmt"
+	"github.com/ghodss/yaml"
 	"github.com/goccy/go-json"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"strings"
@@ -36,7 +37,7 @@ func AnyLoadYaml[T any](cli *clientv3.Client, s string) T {
 		panic(err)
 	}
 
-	err = json.Unmarshal(res.Kvs[0].Value, &c)
+	err = yaml.Unmarshal(res.Kvs[0].Value, &c)
 	if err != nil {
 		panic(err)
 	}
