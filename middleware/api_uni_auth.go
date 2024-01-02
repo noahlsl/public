@@ -11,20 +11,19 @@ import (
 )
 
 type UniAuth struct {
-	c redis.RedisConf
+	r *redis.Redis
 }
 
-func NewUniAuth(c redis.RedisConf) *UniAuth {
-	return &UniAuth{c: c}
+func NewUniAuth(r *redis.Redis) *UniAuth {
+	return &UniAuth{r: r}
 }
 
 func (u *UniAuth) Handle(next http.HandlerFunc) http.HandlerFunc {
-	rds := redis.MustNewRedis(u.c)
 	return func(w http.ResponseWriter, r *http.Request) {
 		token := r.Header.Get("Authorization")
 		if token != "" {
 			key := fmt.Sprintf(consts.RedisKeyAuth, token)
-			exists, err := rds.Exists(key)
+			exists, err := u.r.Exists(key)
 			if err != nil || !exists {
 				xhttp.JsonBaseResponseCtx(r.Context(), w, xerrors.New(enums.ErrSysTokenExpired, "Login expired"))
 				return
@@ -35,11 +34,10 @@ func (u *UniAuth) Handle(next http.HandlerFunc) http.HandlerFunc {
 }
 
 func (u *UniAuth) UniAuthMiddleware(w http.ResponseWriter, r *http.Request) error {
-	rds := redis.MustNewRedis(u.c)
 	token := r.Header.Get("Authorization")
 	if token != "" {
 		key := fmt.Sprintf(consts.RedisKeyAuth, token)
-		exists, err := rds.Exists(key)
+		exists, err := u.r.Exists(key)
 		if err != nil || !exists {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, xerrors.New(enums.ErrSysTokenExpired, "Login expired"))
 			return consts.ErrSysTokenExpired
