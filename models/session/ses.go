@@ -39,7 +39,6 @@ func (s *Ses) Login(ctx context.Context, secret string, id interface{}, ex ...in
 		return token, errors.WithStack(err)
 	}
 
-	key = fmt.Sprintf(consts.RedisKeyAuth, token)
 	if token != "" {
 		_, _ = s.r.DelCtx(ctx, fmt.Sprintf(consts.RedisKeyAuth, token))
 	}
@@ -51,21 +50,17 @@ func (s *Ses) Login(ctx context.Context, secret string, id interface{}, ex ...in
 		return "", err
 	}
 
-	err = s.r.PipelinedCtx(ctx, func(pipe redis.Pipeliner) error {
-		key = fmt.Sprintf(consts.RedisKeyAuth, token)
-		err = pipe.SetEX(ctx, key, "", time.Duration(accessExpire)).Err()
-		if err != nil {
-			return err
-		}
+	key = fmt.Sprintf(consts.RedisKeyAuth, token)
+	err = s.r.SetexCtx(ctx, key, "", int(accessExpire))
+	if err != nil {
+		return "", err
+	}
 
-		key = fmt.Sprintf(consts.RedisKeyUid, id)
-		err = pipe.SetEX(ctx, key, token, time.Duration(accessExpire)).Err()
-		if err != nil {
-			return err
-		}
-
-		return nil
-	})
+	key = fmt.Sprintf(consts.RedisKeyUid, id)
+	err = s.r.SetexCtx(ctx, key, token, int(accessExpire))
+	if err != nil {
+		return "", err
+	}
 
 	if err != nil {
 		return "", err
