@@ -3,6 +3,8 @@ package rocketmqx
 import (
 	"context"
 	"fmt"
+
+	"github.com/ghodss/yaml"
 	"github.com/goccy/go-json"
 	"github.com/noahlsl/public/constants/consts"
 	clientv3 "go.etcd.io/etcd/client/v3"
@@ -18,6 +20,21 @@ func Load(cli *clientv3.Client, project, env string) *Cfg {
 	}
 
 	err = json.Unmarshal(res.Kvs[0].Value, &c)
+	if err != nil {
+		panic(err)
+	}
+
+	return c
+}
+func LoadYaml(cli *clientv3.Client) *Cfg {
+
+	c := &Cfg{}
+	res, err := cli.Get(context.Background(), consts.ConfYamlRocketMQ)
+	if err != nil {
+		panic(err)
+	}
+
+	err = yaml.Unmarshal(res.Kvs[0].Value, &c)
 	if err != nil {
 		panic(err)
 	}

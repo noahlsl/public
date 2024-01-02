@@ -3,6 +3,8 @@ package redisx
 import (
 	"context"
 	"fmt"
+
+	"github.com/ghodss/yaml"
 	"github.com/goccy/go-json"
 	"github.com/noahlsl/public/constants/consts"
 	"github.com/zeromicro/go-zero/core/stores/redis"
@@ -19,6 +21,21 @@ func Load(cli *clientv3.Client, project, env string) redis.RedisConf {
 	}
 
 	err = json.Unmarshal(res.Kvs[0].Value, &c)
+	if err != nil {
+		panic(err)
+	}
+
+	return c
+}
+func LoadYaml(cli *clientv3.Client) redis.RedisConf {
+
+	c := redis.RedisConf{}
+	res, err := cli.Get(context.Background(), consts.ConfYamlRedis)
+	if err != nil {
+		panic(err)
+	}
+
+	err = yaml.Unmarshal(res.Kvs[0].Value, &c)
 	if err != nil {
 		panic(err)
 	}

@@ -15,3 +15,17 @@ const (
 	CfgMinio      = "/%s/config/%s/minio"
 	CfgObs        = "/%s/config/%s/obs"
 )
+
+const (
+	ConfYamlMySQL      = "Mysql"
+	ConfYamlRedis      = "Redis"
+	ConfYamlRocketMQ   = "Rocketmq"
+	ConfYamlTelegram   = "Telegram"
+	ConfYamlEs         = "Elasticsearch"
+	ConfYamlNats       = "Nats"
+	ConfYamlPulsar     = "Pulsar"
+	ConfYamlTelemetry  = "Telemetry"
+	ConfYamlPrometheus = "Prometheus"
+	ConfYamlMinio      = "Minio"
+	ConfYamlObs        = "Obs"
+)
