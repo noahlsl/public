@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/noahlsl/public/constants/enums"
-	"github.com/zeromicro/x/errors"
 	"net/http"
 
 	"github.com/noahlsl/public/constants/consts"
+	"github.com/noahlsl/public/constants/enums"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/rest/httpx"
+	xerrors "github.com/zeromicro/x/errors"
 	xhttp "github.com/zeromicro/x/http"
 )
 
@@ -68,20 +68,22 @@ func BaseCtxMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func UniAuth(cfg redis.RedisConf) func(http.Handler) http.HandlerFunc {
-	rds := redis.MustNewRedis(cfg)
-	return func(next http.Handler) http.HandlerFunc {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			token := r.Header.Get("Authorization")
-			if token != "" {
-				key := fmt.Sprintf(consts.RedisKeyAuth, token)
-				exists, err := rds.Exists(key)
-				if err != nil || !exists {
-					xhttp.JsonBaseResponseCtx(r.Context(), w, errors.New(enums.ErrSysTokenExpired, "Login expired"))
-					return
-				}
+type UniAuth struct {
+	c redis.RedisConf
+}
+
+func (u *UniAuth) Handle(next http.HandlerFunc) http.HandlerFunc {
+	rds := redis.MustNewRedis(u.c)
+	return func(w http.ResponseWriter, r *http.Request) {
+		token := r.Header.Get("Authorization")
+		if token != "" {
+			key := fmt.Sprintf(consts.RedisKeyAuth, token)
+			exists, err := rds.Exists(key)
+			if err != nil || !exists {
+				xhttp.JsonBaseResponseCtx(r.Context(), w, xerrors.New(enums.ErrSysTokenExpired, "Login expired"))
+				return
 			}
-			next.ServeHTTP(w, r)
-		})
+		}
+		next(w, r)
 	}
 }
