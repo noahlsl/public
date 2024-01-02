@@ -6,8 +6,9 @@ import (
 	"github.com/noahlsl/public/constants/consts"
 	"github.com/noahlsl/public/constants/enums"
 	"github.com/noahlsl/public/helper/md5x"
-	"github.com/noahlsl/public/models/res"
 	"github.com/zeromicro/go-zero/core/stores/redis"
+	xerror "github.com/zeromicro/x/errors"
+	xhttp "github.com/zeromicro/x/http"
 	"net/http"
 	"strings"
 )
@@ -37,8 +38,7 @@ func (m *IdempotenceMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			key := fmt.Sprintf(m.key, md5x.ByString(param, r.RequestURI, token))
 			ok, err := m.r.SetnxExCtx(context.Background(), key, "0", m.num)
 			if err != nil || !ok {
-				rs := res.NewRes().WithCode(enums.ErrRequestLimit)
-				_, _ = w.Write(rs.ToBytes())
+				xhttp.JsonBaseResponseCtx(r.Context(), w, xerror.New(enums.ErrRequestLimit, "Request limit"))
 				return
 			}
 		}

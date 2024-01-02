@@ -2,14 +2,15 @@ package middleware
 
 import (
 	"context"
-	"github.com/zeromicro/go-zero/core/stores/redis"
 	"net/http"
 
 	"github.com/noahlsl/public/constants/consts"
 	"github.com/noahlsl/public/constants/enums"
-	"github.com/noahlsl/public/helper/ipx"
-	"github.com/noahlsl/public/models/res"
 	"github.com/pkg/errors"
+	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/zeromicro/go-zero/rest/httpx"
+	xerror "github.com/zeromicro/x/errors"
+	xhttp "github.com/zeromicro/x/http"
 )
 
 type IPMiddleware struct {
@@ -27,17 +28,15 @@ func NewIPMiddleware(r *redis.Redis, key string) *IPMiddleware {
 func (l *IPMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		ipStr := ipx.RemoteIp(r)
+		ipStr := httpx.GetRemoteAddr(r)
 		result, err := l.r.SismemberCtx(context.Background(), l.key, ipStr)
 		if err != nil {
-			rs := res.NewRes().WithCode(enums.ErrRequestLimit)
-			_, _ = w.Write(rs.ToBytes())
+			xhttp.JsonBaseResponseCtx(r.Context(), w, xerror.New(enums.ErrRequestLimit, "IP limit"))
 			return
 		}
 
 		if !result {
-			rs := res.NewRes().WithCode(enums.ErrRequestLimit)
-			_, _ = w.Write(rs.ToBytes())
+			xhttp.JsonBaseResponseCtx(r.Context(), w, xerror.New(enums.ErrRequestLimit, "IP limit"))
 			return
 		}
 
@@ -47,7 +46,7 @@ func (l *IPMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 
 func (l *IPMiddleware) OriginalHandle(_ http.ResponseWriter, r *http.Request) error {
 
-	ipStr := ipx.RemoteIp(r)
+	ipStr := httpx.GetRemoteAddr(r)
 	result, err := l.r.SismemberCtx(context.Background(), l.key, ipStr)
 	if err != nil {
 		return errors.WithMessage(consts.ErrRequestLimit, err.Error())

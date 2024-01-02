@@ -73,14 +73,13 @@ func UniAuth(cfg redis.RedisConf) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			token := r.Header.Get("Authorization")
-			if token == "" {
-				return
-			}
-			key := fmt.Sprintf(consts.RedisKeyAuth, token)
-			exists, err := rds.Exists(key)
-			if err != nil || !exists {
-				xhttp.JsonBaseResponseCtx(r.Context(), w, errors.New(enums.ErrSysTokenExpired, "Login expired"))
-				return
+			if token != "" {
+				key := fmt.Sprintf(consts.RedisKeyAuth, token)
+				exists, err := rds.Exists(key)
+				if err != nil || !exists {
+					xhttp.JsonBaseResponseCtx(r.Context(), w, errors.New(enums.ErrSysTokenExpired, "Login expired"))
+					return
+				}
 			}
 			next.ServeHTTP(w, r)
 		})

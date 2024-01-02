@@ -2,11 +2,13 @@ package middleware
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"time"
 
 	"github.com/noahlsl/public/constants/enums"
-	"github.com/noahlsl/public/models/res"
+	xerror "github.com/zeromicro/x/errors"
+	xhttp "github.com/zeromicro/x/http"
 )
 
 type TimeoutMiddleware struct {
@@ -25,9 +27,8 @@ func (m *TimeoutMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(r.Context(), m.timeout)
 		defer func() {
-			if ctx.Err() == context.DeadlineExceeded {
-				rs := res.NewRes().WithCode(enums.ErrTimeout)
-				_, _ = w.Write(rs.ToBytes())
+			if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+				xhttp.JsonBaseResponseCtx(r.Context(), w, xerror.New(enums.ErrTimeout, "Request Timeout"))
 				return
 			}
 
@@ -41,9 +42,8 @@ func (m *TimeoutMiddleware) OriginalHandle(w http.ResponseWriter, r *http.Reques
 
 	ctx, cancel := context.WithTimeout(r.Context(), m.timeout)
 	defer func() {
-		if ctx.Err() == context.DeadlineExceeded {
-			rs := res.NewRes().WithCode(enums.ErrTimeout)
-			_, _ = w.Write(rs.ToBytes())
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			xhttp.JsonBaseResponseCtx(r.Context(), w, xerror.New(enums.ErrTimeout, "Request Timeout"))
 			return
 		}
 

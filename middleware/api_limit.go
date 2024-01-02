@@ -2,7 +2,8 @@ package middleware
 
 import (
 	"github.com/noahlsl/public/constants/enums"
-	"github.com/noahlsl/public/models/res"
+	xerror "github.com/zeromicro/x/errors"
+	xhttp "github.com/zeromicro/x/http"
 	"net/http"
 	"time"
 
@@ -29,8 +30,7 @@ func (l *LimitMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		if l.bucket.TakeAvailable(1) < 1 {
-			rs := res.NewRes().WithCode(enums.ErrRequestLimit)
-			_, _ = w.Write(rs.ToBytes())
+			xhttp.JsonBaseResponseCtx(r.Context(), w, xerror.New(enums.ErrRequestLimit, "Request limit"))
 			return
 		}
 
@@ -38,7 +38,7 @@ func (l *LimitMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func (l *LimitMiddleware) OriginalHandle(_ http.ResponseWriter, r *http.Request) error {
+func (l *LimitMiddleware) OriginalHandle(_ http.ResponseWriter, _ *http.Request) error {
 
 	if l.bucket.TakeAvailable(1) < 1 {
 		return consts.ErrRequestLimit
