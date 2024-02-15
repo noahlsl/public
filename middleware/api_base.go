@@ -24,11 +24,11 @@ func BaseMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			driver = "1"
 		}
 		m["driver"] = driver
-		siteCode := r.Header.Get("site_code")
+		siteCode := r.Header.Get("website")
 		if siteCode == "" {
 			siteCode = "mall"
 		}
-		m["site_code"] = siteCode
+		m["website"] = siteCode
 		m["debug"] = r.Header.Get("debug")
 		marshal, _ := json.Marshal(m)
 		r.Header.Set("base", string(marshal))
@@ -39,12 +39,12 @@ func BaseMiddleware(next http.HandlerFunc) http.HandlerFunc {
 func BaseCtxMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		lang := r.Header.Get("lang")
+		lang := r.Header.Get("language")
 		if lang == "" {
 			lang = consts.ZH
 		}
 
-		ctx = context.WithValue(ctx, "lang", lang)
+		ctx = context.WithValue(ctx, "language", lang)
 		ctx = context.WithValue(ctx, "ip", httpx.GetRemoteAddr(r))
 
 		driver := r.Header.Get("driver")
