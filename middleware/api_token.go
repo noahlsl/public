@@ -71,7 +71,7 @@ func (m *TokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func (m *TokenMiddleware) OriginalHandle(_ http.ResponseWriter, r *http.Request) error {
+func (m *TokenMiddleware) OriginalHandle(w http.ResponseWriter, r *http.Request) error {
 
 	var ctx = context.Background()
 	token := r.Header.Get("Authorization")
@@ -88,6 +88,7 @@ func (m *TokenMiddleware) OriginalHandle(_ http.ResponseWriter, r *http.Request)
 	}
 
 	if token == "" {
+		w.WriteHeader(http.StatusUnauthorized)
 		return consts.ErrSysTokenExpired
 	}
 

@@ -40,6 +40,7 @@ func (u *UniAuth) UniAuthMiddleware(w http.ResponseWriter, r *http.Request) erro
 		key := fmt.Sprintf(consts.RedisKeyAuth, token)
 		exists, err := u.r.Exists(key)
 		if err != nil || !exists {
+			w.WriteHeader(http.StatusUnauthorized)
 			return consts.ErrSysTokenExpired
 		}
 	}
