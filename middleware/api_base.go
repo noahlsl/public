@@ -18,7 +18,7 @@ func BaseMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		}
 		m["language"] = lang
 		m["ip"] = httpx.GetRemoteAddr(r)
-
+		m["path"] = r.URL.Path
 		driver := r.Header.Get("driver")
 		if driver == "" {
 			driver = "1"
@@ -58,6 +58,7 @@ func BaseCtxMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		}
 		ctx = context.WithValue(ctx, "website", website)
 		ctx = context.WithValue(ctx, "debug", r.Header.Get("debug"))
+		ctx = context.WithValue(ctx, "path", r.URL.Path)
 		r = r.WithContext(ctx)
 		next(w, r)
 	}
