@@ -111,15 +111,15 @@ func MustGDB(dsn string, l *zap.Logger) *gorm.DB {
 		panic("failed to connect database")
 	}
 
-	err = db.Callback().Create().Replace("gorm:create", updateTimeStampForCreateCallback)
+	err = db.Callback().Create().Replace("gorm:before_create", updateTimeStampForCreateCallback)
 	if err != nil {
 		panic(err)
 	}
-	err = db.Callback().Update().Replace("gorm:update", updateTimeStampForUpdateCallback)
+	err = db.Callback().Update().Replace("gorm:before_update", updateTimeStampForUpdateCallback)
 	if err != nil {
 		panic(err)
 	}
-	err = db.Callback().Delete().Replace("gorm:delete", deleteCallback)
+	err = db.Callback().Delete().Replace("gorm:before_delete", updateTimeStampForDeleteCallback)
 	if err != nil {
 		panic(err)
 	}
@@ -139,7 +139,7 @@ func updateTimeStampForUpdateCallback(db *gorm.DB) {
 }
 
 // 注册删除钩子在删除之前
-func deleteCallback(db *gorm.DB) {
+func updateTimeStampForDeleteCallback(db *gorm.DB) {
 	db.Statement.SetColumn("delete_at", time.Now().UnixMilli())
 	// 在这里你可以执行额外的自定义逻辑，例如记录日志或发送通知等
 }
