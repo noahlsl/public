@@ -3,13 +3,11 @@ package dbx
 import (
 	"database/sql"
 	"fmt"
-	"go.uber.org/zap"
-	"time"
-
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/jmoiron/sqlx"
 	zeroSqlx "github.com/zeromicro/go-zero/core/stores/sqlx"
+	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
@@ -103,7 +101,9 @@ func MustGDB(dsn string, l *zap.Logger) *gorm.DB {
 	if l != nil {
 		logger := zapgorm2.New(l)
 		logger.SetAsDefault()
-		cfg = &gorm.Config{Logger: logger}
+		cfg = &gorm.Config{
+			Logger: logger,
+		}
 	}
 	// 打开 MySQL 数据库连接。
 	db, err := gorm.Open(mysql.Open(dsn), cfg)
@@ -111,65 +111,5 @@ func MustGDB(dsn string, l *zap.Logger) *gorm.DB {
 		panic("failed to connect database")
 	}
 
-	err = db.Callback().Create().Replace("gorm:before_create", createHook)
-	if err != nil {
-		panic(err)
-	}
-	err = db.Callback().Update().Replace("gorm:before_update", updateHook)
-	if err != nil {
-		panic(err)
-	}
-	err = db.Callback().Delete().Replace("gorm:before_delete", deleteHook)
-	if err != nil {
-		panic(err)
-	}
 	return db
-}
-
-// updateHook 是你自定义的全局钩子函数，它将在执行任何模型的 Update 操作之前执行
-func createHook(db *gorm.DB) {
-	// 检查更新操作中是否存在更新字段为 updated_at
-	// 获取模型的 Schema 信息
-	schema := db.Statement.Schema
-
-	// 遍历 Schema 的字段，检查是否存在更新字段为 updated_at
-	for _, field := range schema.Fields {
-		if field.DBName == "created_at" {
-			// 设置 updated_at 字段的值为当前时间
-			db.Statement.SetColumn("created_at", time.Now().UnixMilli())
-			break
-		}
-	}
-}
-
-// updateHook 是你自定义的全局钩子函数，它将在执行任何模型的 Update 操作之前执行
-func updateHook(db *gorm.DB) {
-	// 检查更新操作中是否存在更新字段为 updated_at
-	// 获取模型的 Schema 信息
-	schema := db.Statement.Schema
-
-	// 遍历 Schema 的字段，检查是否存在更新字段为 updated_at
-	for _, field := range schema.Fields {
-		if field.DBName == "updated_at" {
-			// 设置 updated_at 字段的值为当前时间
-			db.Statement.SetColumn("updated_at", time.Now().UnixMilli())
-			break
-		}
-	}
-}
-
-// updateHook 是你自定义的全局钩子函数，它将在执行任何模型的 Update 操作之前执行
-func deleteHook(db *gorm.DB) {
-	// 检查更新操作中是否存在更新字段为 updated_at
-	// 获取模型的 Schema 信息
-	schema := db.Statement.Schema
-
-	// 遍历 Schema 的字段，检查是否存在更新字段为 updated_at
-	for _, field := range schema.Fields {
-		if field.DBName == "deleted_at" {
-			// 设置 updated_at 字段的值为当前时间
-			db.Statement.SetColumn("deleted_at", time.Now().UnixMilli())
-			break
-		}
-	}
 }
