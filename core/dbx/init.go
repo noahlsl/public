@@ -115,11 +115,11 @@ func MustGDB(dsn string, l *zap.Logger) *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
-	err = db.Callback().Update().Before("gorm:update").Register("updateHook", createHook)
+	err = db.Callback().Update().Before("gorm:update").Register("updateHook", updateHook)
 	if err != nil {
 		panic(err)
 	}
-	err = db.Callback().Delete().Before("gorm:delete").Register("deleteHook", createHook)
+	err = db.Callback().Delete().Before("gorm:delete").Register("deleteHook", deleteHook)
 	if err != nil {
 		panic(err)
 	}
