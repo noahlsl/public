@@ -111,39 +111,65 @@ func MustGDB(dsn string, l *zap.Logger) *gorm.DB {
 		panic("failed to connect database")
 	}
 
-	err = db.Callback().Create().Replace("gorm:before_create", updateTimeStampForCreateCallback)
+	err = db.Callback().Create().Before("gorm:create").Register("createHook", createHook)
 	if err != nil {
 		panic(err)
 	}
-	err = db.Callback().Update().Replace("gorm:before_update", updateTimeStampForUpdateCallback)
+	err = db.Callback().Update().Before("gorm:update").Register("updateHook", createHook)
 	if err != nil {
 		panic(err)
 	}
-	err = db.Callback().Delete().Replace("gorm:before_delete", updateTimeStampForDeleteCallback)
+	err = db.Callback().Delete().Before("gorm:delete").Register("deleteHook", createHook)
 	if err != nil {
 		panic(err)
 	}
 	return db
 }
 
-// // 注册新建钩子在持久化之前
-func updateTimeStampForCreateCallback(db *gorm.DB) {
-	// 检查是否存在指定字段
-	if db.Migrator().HasColumn(db.Statement.Table, "created_at") {
-		db.Statement.SetColumn("created_at", time.Now().UnixMilli())
+// updateHook 是你自定义的全局钩子函数，它将在执行任何模型的 Update 操作之前执行
+func createHook(db *gorm.DB) {
+	// 检查更新操作中是否存在更新字段为 updated_at
+	// 获取模型的 Schema 信息
+	schema := db.Statement.Schema
+
+	// 遍历 Schema 的字段，检查是否存在更新字段为 updated_at
+	for _, field := range schema.Fields {
+		if field.DBName == "created_at" {
+			// 设置 updated_at 字段的值为当前时间
+			db.Statement.SetColumn("created_at", time.Now().UnixMilli())
+			break
+		}
 	}
 }
 
-// 注册更新钩子在持久化之前
-func updateTimeStampForUpdateCallback(db *gorm.DB) {
-	if db.Migrator().HasColumn(db.Statement.Table, "updated_at") {
-		db.Statement.SetColumn("updated_at", time.Now().UnixMilli())
+// updateHook 是你自定义的全局钩子函数，它将在执行任何模型的 Update 操作之前执行
+func updateHook(db *gorm.DB) {
+	// 检查更新操作中是否存在更新字段为 updated_at
+	// 获取模型的 Schema 信息
+	schema := db.Statement.Schema
+
+	// 遍历 Schema 的字段，检查是否存在更新字段为 updated_at
+	for _, field := range schema.Fields {
+		if field.DBName == "updated_at" {
+			// 设置 updated_at 字段的值为当前时间
+			db.Statement.SetColumn("updated_at", time.Now().UnixMilli())
+			break
+		}
 	}
 }
 
-// 注册删除钩子在删除之前
-func updateTimeStampForDeleteCallback(db *gorm.DB) {
-	if db.Migrator().HasColumn(db.Statement.Table, "delete_at") {
-		db.Statement.SetColumn("delete_at", time.Now().UnixMilli())
+// updateHook 是你自定义的全局钩子函数，它将在执行任何模型的 Update 操作之前执行
+func deleteHook(db *gorm.DB) {
+	// 检查更新操作中是否存在更新字段为 updated_at
+	// 获取模型的 Schema 信息
+	schema := db.Statement.Schema
+
+	// 遍历 Schema 的字段，检查是否存在更新字段为 updated_at
+	for _, field := range schema.Fields {
+		if field.DBName == "deleted_at" {
+			// 设置 updated_at 字段的值为当前时间
+			db.Statement.SetColumn("deleted_at", time.Now().UnixMilli())
+			break
+		}
 	}
 }
