@@ -130,20 +130,20 @@ func MustGDB(dsn string, l *zap.Logger) *gorm.DB {
 func updateTimeStampForCreateCallback(db *gorm.DB) {
 	// 检查是否存在指定字段
 	if db.Migrator().HasColumn(db.Statement.Table, "created_at") {
-		db.Statement.Set("created_at", time.Now().UnixMilli())
+		db.Statement.SetColumn("created_at", time.Now().UnixMilli())
 	}
 }
 
 // 注册更新钩子在持久化之前
 func updateTimeStampForUpdateCallback(db *gorm.DB) {
 	if db.Migrator().HasColumn(db.Statement.Table, "updated_at") {
-		db.Statement.Set("updated_at", time.Now().UnixMilli())
+		db.Statement.SetColumn("updated_at", time.Now().UnixMilli())
 	}
 }
 
 // 注册删除钩子在删除之前
 func updateTimeStampForDeleteCallback(db *gorm.DB) {
 	if db.Migrator().HasColumn(db.Statement.Table, "delete_at") {
-		db.Statement.Set("delete_at", time.Now().UnixMilli())
+		db.Statement.SetColumn("delete_at", time.Now().UnixMilli())
 	}
 }
