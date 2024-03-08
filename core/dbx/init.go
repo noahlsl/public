@@ -111,15 +111,15 @@ func MustGDB(dsn string, l *zap.Logger) *gorm.DB {
 		panic("failed to connect database")
 	}
 
-	err = db.Callback().Create().Before("gorm:create").Replace("created_at", createHook)
+	err = db.Callback().Create().Replace("gorm:before_create", createHook)
 	if err != nil {
 		panic(err)
 	}
-	err = db.Callback().Update().Before("gorm:update").Replace("updated_at", updateHook)
+	err = db.Callback().Update().Replace("gorm:before_update", updateHook)
 	if err != nil {
 		panic(err)
 	}
-	err = db.Callback().Delete().Before("gorm:delete").Replace("deleted_at", deleteHook)
+	err = db.Callback().Delete().Replace("gorm:before_delete", deleteHook)
 	if err != nil {
 		panic(err)
 	}
