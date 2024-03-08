@@ -4,8 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"go.uber.org/zap"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/jmoiron/sqlx"
 	zeroSqlx "github.com/zeromicro/go-zero/core/stores/sqlx"
 	"gorm.io/driver/mysql"
@@ -108,5 +110,36 @@ func MustGDB(dsn string, l *zap.Logger) *gorm.DB {
 	if err != nil {
 		panic("failed to connect database")
 	}
+
+	err = db.Callback().Create().Replace("gorm:create", updateTimeStampForCreateCallback)
+	if err != nil {
+		panic(err)
+	}
+	err = db.Callback().Update().Replace("gorm:update", updateTimeStampForUpdateCallback)
+	if err != nil {
+		panic(err)
+	}
+	err = db.Callback().Delete().Replace("gorm:delete", deleteCallback)
+	if err != nil {
+		panic(err)
+	}
 	return db
+}
+
+// // 注册新建钩子在持久化之前
+func updateTimeStampForCreateCallback(db *gorm.DB) {
+	db.Statement.SetColumn("created_at", time.Now().UnixMilli())
+	// 在这里你可以执行额外的自定义逻辑，例如记录日志或发送通知等
+}
+
+// 注册更新钩子在持久化之前
+func updateTimeStampForUpdateCallback(db *gorm.DB) {
+	db.Statement.SetColumn("updated_at", time.Now().UnixMilli())
+	// 在这里你可以执行额外的自定义逻辑，例如记录日志或发送通知等
+}
+
+// 注册删除钩子在删除之前
+func deleteCallback(db *gorm.DB) {
+	db.Statement.SetColumn("delete_at", time.Now().UnixMilli())
+	// 在这里你可以执行额外的自定义逻辑，例如记录日志或发送通知等
 }

@@ -7,6 +7,7 @@ require (
 	github.com/apache/rocketmq-client-go/v2 v2.1.2
 	github.com/doug-martin/goqu/v9 v9.19.0
 	github.com/elastic/go-elasticsearch/v7 v7.17.10
+	github.com/ghodss/yaml v1.0.0
 	github.com/go-playground/validator/v10 v10.16.0
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
@@ -15,6 +16,7 @@ require (
 	github.com/golang-module/dongle v0.2.8
 	github.com/google/uuid v1.5.0
 	github.com/huaweicloud/huaweicloud-sdk-go-obs v3.23.9+incompatible
+	github.com/jinzhu/gorm v1.9.16
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/juju/ratelimit v1.0.2
 	github.com/matoous/go-nanoid/v2 v2.0.0
