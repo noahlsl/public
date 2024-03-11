@@ -37,6 +37,9 @@ func newZapWriter(c logx.LogConf, opts ...zap.Option) (logx.Writer, *zap.Logger,
 	cfg.DisableStacktrace = true
 	cfg.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout(time.DateTime)
 	cfg.Level = zap.NewAtomicLevelAt(getZapLevel(c.Level))
+	if c.Encoding != "json" {
+		cfg.Encoding = "console"
+	}
 	logger, err := cfg.Build(opts...)
 	if err != nil {
 		return nil, nil, err
