@@ -95,6 +95,7 @@ func InitLogX(c logx.LogConf) {
 }
 
 func MustSetUp(c logx.LogConf, fields ...zap.Field) *zap.Logger {
+	logx.MustSetup(c)
 	writer, logger := NewZapWriter(c, fields...)
 	logx.SetWriter(writer)
 	logger.Level()
