@@ -62,6 +62,11 @@ func BaseCtxMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			website = "mall"
 		}
 		ctx = context.WithValue(ctx, "website", website)
+		siteLang := r.Header.Get("lang")
+		if siteLang == "" {
+			siteLang = consts.JA
+		}
+		ctx = context.WithValue(ctx, "lang", siteLang)
 		ctx = context.WithValue(ctx, "debug", r.Header.Get("debug"))
 		ctx = context.WithValue(ctx, "path", r.URL.Path)
 		r = r.WithContext(ctx)
