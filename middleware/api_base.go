@@ -29,6 +29,11 @@ func BaseMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			siteCode = "mall"
 		}
 		m["website"] = siteCode
+		siteLang := r.Header.Get("lang")
+		if siteLang == "" {
+			siteLang = consts.JA
+		}
+		m["lang"] = siteLang
 		m["debug"] = r.Header.Get("debug")
 		marshal, _ := json.Marshal(m)
 		r.Header.Set("base", string(marshal))
