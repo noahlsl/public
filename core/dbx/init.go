@@ -69,7 +69,7 @@ func (c *Cfg) NewGDB() *gorm.DB {
 
 func (c *Cfg) DataSource() string {
 
-	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True",
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=Truetimeout=10s&readTimeout=20s",
 		c.Username, c.Password, c.Host, c.Port, c.Db)
 }
 
