@@ -14,6 +14,7 @@ const (
 	CfgRpc        = "/%s/config/%s/rpc/%s"
 	CfgMinio      = "/%s/config/%s/minio"
 	CfgObs        = "/%s/config/%s/obs"
+	CfgMongo      = "/%s/config/%s/mongo"
 )
 
 const (
@@ -28,4 +29,5 @@ const (
 	ConfYamlPrometheus = "Prometheus"
 	ConfYamlMinio      = "Minio"
 	ConfYamlObs        = "Obs"
+	ConfYamlMongo      = "Mongo"
 )

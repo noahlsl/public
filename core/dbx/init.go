@@ -6,6 +6,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/jmoiron/sqlx"
+	"github.com/noahlsl/public/helper/loggerx"
 	zeroSqlx "github.com/zeromicro/go-zero/core/stores/sqlx"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
@@ -73,25 +74,16 @@ func (c *Cfg) DataSource() string {
 		c.Username, c.Password, c.Host, c.Port, c.Db)
 }
 
-func MustDB(dsn string, poolSize ...int) *sqlx.DB {
+func MustDB(dsn, logLevel string) *gorm.DB {
 
-	db, err := sqlx.Connect("mysql", dsn)
+	log := loggerx.New(logLevel)
+	// 打开 MySQL 数据库连接。
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: log,
+	})
 	if err != nil {
-		panic(err)
+		panic("failed to connect database")
 	}
-	var (
-		maxOpen = 100
-		maxIdle = 50
-	)
-	if len(poolSize) > 0 {
-		if poolSize[0] > 0 {
-			maxOpen = poolSize[0]
-			maxIdle = poolSize[0] / 2
-		}
-	}
-
-	db.SetMaxOpenConns(maxOpen)
-	db.SetMaxIdleConns(maxIdle)
 
 	return db
 }
