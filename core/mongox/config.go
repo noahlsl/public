@@ -1,4 +1,4 @@
-package obsx
+package mongox
 
 type Cfg struct {
 	Host     string `json:"host"`     // IP

@@ -1,4 +1,4 @@
-package obsx
+package mongox
 
 import (
 	"context"
