@@ -2,7 +2,7 @@ package ipx
 
 import (
 	"fmt"
-	"github.com/goccy/go-json"
+	json "github.com/bytedance/sonic"
 	"github.com/zeromicro/go-zero/core/logx"
 	"io/ioutil"
 	"math/big"

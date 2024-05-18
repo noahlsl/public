@@ -3,8 +3,8 @@ package serverx
 import (
 	"context"
 	"fmt"
+	json "github.com/bytedance/sonic"
 	"github.com/ghodss/yaml"
-	"github.com/goccy/go-json"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"strings"
 

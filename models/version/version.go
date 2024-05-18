@@ -3,7 +3,7 @@ package version
 import (
 	"strconv"
 
-	"github.com/goccy/go-json"
+	json "github.com/bytedance/sonic"
 	"github.com/noahlsl/public/helper/ipx"
 	"github.com/noahlsl/public/helper/strx"
 )

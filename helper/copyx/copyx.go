@@ -1,7 +1,7 @@
 package copyx
 
 import (
-	"github.com/goccy/go-json"
+	json "github.com/bytedance/sonic"
 	"github.com/noahlsl/public/helper/slicex"
 	"github.com/young2j/gocopy"
 )

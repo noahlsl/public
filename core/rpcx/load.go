@@ -3,8 +3,8 @@ package rpcx
 import (
 	"context"
 	"fmt"
+	json "github.com/bytedance/sonic"
 	"github.com/ghodss/yaml"
-	"github.com/goccy/go-json"
 	"github.com/noahlsl/public/constants/consts"
 	"github.com/zeromicro/go-zero/core/discov"
 	"github.com/zeromicro/go-zero/zrpc"

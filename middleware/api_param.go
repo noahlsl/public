@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"bytes"
-	"github.com/goccy/go-json"
+	json "github.com/bytedance/sonic"
 	"io/ioutil"
 	"net/http"
 	"strings"

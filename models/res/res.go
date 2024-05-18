@@ -3,7 +3,7 @@ package res
 import (
 	"time"
 
-	"github.com/goccy/go-json"
+	json "github.com/bytedance/sonic"
 	"github.com/golang-module/dongle"
 	"github.com/noahlsl/public/helper/strx"
 )

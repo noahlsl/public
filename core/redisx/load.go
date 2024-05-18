@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	json "github.com/bytedance/sonic"
 	"github.com/ghodss/yaml"
-	"github.com/goccy/go-json"
 	"github.com/noahlsl/public/constants/consts"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	clientv3 "go.etcd.io/etcd/client/v3"

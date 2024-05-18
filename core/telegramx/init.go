@@ -1,8 +1,8 @@
 package telegramx
 
 import (
+	json "github.com/bytedance/sonic"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/goccy/go-json"
 	"log"
 )
 

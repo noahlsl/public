@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/goccy/go-json"
+	json "github.com/bytedance/sonic"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"io"

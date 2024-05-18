@@ -2,7 +2,7 @@ package strx
 
 import (
 	"fmt"
-	"github.com/goccy/go-json"
+	json "github.com/bytedance/sonic"
 	"reflect"
 	"strconv"
 	"strings"

@@ -3,8 +3,8 @@ package telegramx
 import (
 	"context"
 	"fmt"
+	json "github.com/bytedance/sonic"
 	"github.com/ghodss/yaml"
-	"github.com/goccy/go-json"
 	"github.com/noahlsl/public/constants/consts"
 	clientv3 "go.etcd.io/etcd/client/v3"
 )

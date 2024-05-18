@@ -1,6 +1,6 @@
 package bytex
 
-import "github.com/goccy/go-json"
+import json "github.com/bytedance/sonic"
 
 func ToBytes(data any) []byte {
 	marshal, _ := json.Marshal(data)

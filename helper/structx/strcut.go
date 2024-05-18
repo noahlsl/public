@@ -4,7 +4,7 @@ import (
 	"errors"
 	"reflect"
 
-	"github.com/goccy/go-json"
+	json "github.com/bytedance/sonic"
 	"github.com/noahlsl/public/helper/strx"
 )
 

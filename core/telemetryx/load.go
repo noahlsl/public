@@ -3,7 +3,7 @@ package telemetryx
 import (
 	"context"
 	"fmt"
-	"github.com/goccy/go-json"
+	json "github.com/bytedance/sonic"
 	"github.com/noahlsl/public/constants/consts"
 	clientv3 "go.etcd.io/etcd/client/v3"
 )
