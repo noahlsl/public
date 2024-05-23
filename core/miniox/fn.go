@@ -1,17 +1,24 @@
 package miniox
 
 import (
+	"bytes"
 	"context"
 	"fmt"
-	"github.com/minio/minio-go/v7"
-	"github.com/noahlsl/public/helper/idx"
+	"image"
+	"image/gif"
+	"image/jpeg"
+	"image/png"
 	"io"
 	"net/http"
 	"net/url"
 	"path/filepath"
 	"time"
 
+	"github.com/chai2010/webp"
+	"github.com/minio/minio-go/v7"
+	"github.com/nfnt/resize"
 	"github.com/noahlsl/public/constants/consts"
+	"github.com/noahlsl/public/helper/idx"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -139,6 +146,56 @@ func (c *Client) UploadByRequest(r *http.Request, prefix string, suffix ...strin
 	}
 	name += fileExt
 
+	// 读取响应体内容
+	imageData, err := io.ReadAll(file)
+	if err != nil {
+		return "", err
+	}
+
+	// 获取图片格式
+	mimeType := http.DetectContentType(imageData)
+	var img image.Image
+	switch mimeType {
+	case "image/jpeg", "image/jpg":
+		img, err = jpeg.Decode(bytes.NewReader(imageData))
+	case "image/png":
+		img, err = png.Decode(bytes.NewReader(imageData))
+	case "image/gif":
+		img, err = gif.Decode(bytes.NewReader(imageData))
+	default:
+		return "", fmt.Errorf("unsupported image format: %s", mimeType)
+	}
+
+	if err != nil {
+		return "", err
+	}
+
+	// 压缩图片
+	resizedImg := resize.Resize(0, 0, img, resize.Lanczos3)
+
+	// 创建缓冲区
+	var buf bytes.Buffer
+	// 将压缩后的图片转换为 WebP 格式并保存到缓冲区
+	err = webp.Encode(&buf, resizedImg, &webp.Options{Quality: 90})
+	if err != nil {
+		fmt.Println(err.Error())
+		var buf bytes.Buffer
+		// 编码图像为JPEG格式，并将其写入到字节缓冲区中
+		err = jpeg.Encode(&buf, img, nil)
+		if err != nil {
+			return "", err
+		}
+
+		err = c.Upload(context.Background(), bytes.NewReader(buf.Bytes()), name, int64(buf.Len()))
+		if err != nil {
+			return "", errors.WithStack(err)
+		}
+	} else {
+		err = c.Upload(context.Background(), bytes.NewReader(buf.Bytes()), name, int64(buf.Len()))
+		if err != nil {
+			return "", errors.WithStack(err)
+		}
+	}
 	err = c.Upload(r.Context(), file, name, fileWriter.Size)
 	if err != nil {
 		return "", err
