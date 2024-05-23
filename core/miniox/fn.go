@@ -127,7 +127,7 @@ func (c *Client) UploadByRequest(r *http.Request, prefix string) (string, error)
 		return "", err
 	}
 
-	file, fileWriter, err := r.FormFile("file")
+	file, _, err := r.FormFile("file")
 	if err != nil {
 		return "", err
 	}
@@ -188,10 +188,6 @@ func (c *Client) UploadByRequest(r *http.Request, prefix string) (string, error)
 		if err != nil {
 			return "", errors.WithStack(err)
 		}
-	}
-	err = c.Upload(r.Context(), file, name, fileWriter.Size)
-	if err != nil {
-		return "", err
 	}
 
 	return name, nil
