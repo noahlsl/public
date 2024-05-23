@@ -171,7 +171,6 @@ func (c *Client) UploadByRequest(r *http.Request, prefix string) (string, error)
 	// 将压缩后的图片转换为 WebP 格式并保存到缓冲区
 	err = webp.Encode(&buf, resizedImg, &webp.Options{Quality: 90})
 	if err != nil {
-		fmt.Println(err.Error())
 		var buf bytes.Buffer
 		// 编码图像为JPEG格式，并将其写入到字节缓冲区中
 		err = jpeg.Encode(&buf, img, nil)
