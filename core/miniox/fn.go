@@ -11,7 +11,6 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"path/filepath"
 	"time"
 
 	"github.com/chai2010/webp"
@@ -120,9 +119,8 @@ func (c *Client) DelObject(ctx context.Context, names ...string) error {
 }
 
 // UploadByRequest 上次文件
-// suffix 不传就默认去文件后缀
-// 最大支持 1024 KB，即 1 M
-func (c *Client) UploadByRequest(r *http.Request, prefix string, suffix ...string) (string, error) {
+// 最大支持 2048 KB，即 2 M
+func (c *Client) UploadByRequest(r *http.Request, prefix string) (string, error) {
 
 	err := r.ParseMultipartForm(consts.FileMaxSize)
 	if err != nil {
@@ -139,12 +137,7 @@ func (c *Client) UploadByRequest(r *http.Request, prefix string, suffix ...strin
 	if prefix != "" {
 		name = prefix + "/" + name
 	}
-	// 从文件名中提取后缀名
-	fileExt := filepath.Ext(fileWriter.Filename)
-	if len(suffix) != 0 {
-		fileExt = suffix[0]
-	}
-	name += fileExt
+	name += ".webp"
 
 	// 读取响应体内容
 	imageData, err := io.ReadAll(file)
