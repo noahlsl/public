@@ -11,6 +11,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/chai2010/webp"
@@ -118,7 +119,8 @@ func (c *Client) DelObject(ctx context.Context, names ...string) error {
 	return nil
 }
 
-// UploadByRequest 上次文件
+// Deprecated: 建议使用 UploadWebp
+// UploadByRequest 上传图片
 // 最大支持 2048 KB，即 2 M
 func (c *Client) UploadByRequest(r *http.Request, prefix string) (string, error) {
 
@@ -189,5 +191,44 @@ func (c *Client) UploadByRequest(r *http.Request, prefix string) (string, error)
 		}
 	}
 
+	return name, nil
+}
+
+// UploadWebp 上次文件
+func (c *Client) UploadWebp(r *http.Request, prefix string) (string, error) {
+	return c.UploadByRequest(r, prefix)
+}
+
+// UploadFile 上次文件
+func (c *Client) UploadFile(r *http.Request, prefix string) (string, error) {
+
+	err := r.ParseMultipartForm(consts.FileMaxSize)
+	if err != nil {
+		return "", err
+	}
+
+	file, head, err := r.FormFile("file")
+	if err != nil {
+		return "", err
+	}
+
+	defer file.Close()
+	name := idx.GenUUID()
+	tem := strings.Split(head.Filename, ".")
+	if len(tem) > 1 {
+		name += "." + tem[len(tem)-1]
+	}
+
+	if prefix != "" {
+		name = prefix + "/" + name
+	}
+
+	c.ContentType = consts.FileType
+	err = c.Upload(context.Background(), file, name, head.Size)
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+
+	c.ContentType = consts.WebpType
 	return name, nil
 }
