@@ -7,11 +7,15 @@ import (
 )
 
 // Deprecated: Please Use LoadYaml
-func Load[T any](cli config_client.IConfigClient, project string) T {
+func Load[T any](cli config_client.IConfigClient, project string, groups ...string) T {
 
+	group := "DEFAULT_GROUP"
+	if len(groups) > 0 {
+		group = groups[0]
+	}
 	content, err := cli.GetConfig(vo.ConfigParam{
 		DataId: project,
-		Group:  "DEFAULT_GROUP",
+		Group:  group,
 	})
 
 	if err != nil {
