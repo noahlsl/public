@@ -63,10 +63,6 @@ func (s *Ses) Login(ctx context.Context, secret string, id interface{}, ex ...in
 		return "", err
 	}
 
-	if err != nil {
-		return "", err
-	}
-
 	return token, nil
 }
 

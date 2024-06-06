@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/noahlsl/public/constants/consts"
+	"github.com/ua-parser/uap-go/uaparser"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
@@ -51,12 +52,7 @@ func BaseCtxMiddleware(next http.HandlerFunc) http.HandlerFunc {
 
 		ctx = context.WithValue(ctx, "language", lang)
 		ctx = context.WithValue(ctx, "ip", httpx.GetRemoteAddr(r))
-
-		driver := r.Header.Get("driver")
-		if driver == "" {
-			driver = "1"
-		}
-		ctx = context.WithValue(ctx, "driver", driver)
+		ctx = context.WithValue(ctx, "driver", getDriver(r))
 		website := r.Header.Get("website")
 		if website == "" {
 			website = "mall"
@@ -71,5 +67,17 @@ func BaseCtxMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		ctx = context.WithValue(ctx, "path", r.URL.Path)
 		r = r.WithContext(ctx)
 		next(w, r)
+	}
+}
+
+func getDriver(r *http.Request) string {
+	ua := r.UserAgent()
+	parser := uaparser.NewFromSaved()
+	client := parser.Parse(ua)
+	deviceFamily := client.Device.Family
+	if deviceFamily == "Other" {
+		return "1"
+	} else {
+		return "2"
 	}
 }
