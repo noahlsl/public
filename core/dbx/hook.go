@@ -80,3 +80,27 @@ func setShardedTable(db *gorm.DB, opts Options) {
 		db.Statement.Table = opts.BaseTableName + "_" + suffixFn(id)
 	}
 }
+
+// ReplaceSelectStatementPlugin GORM 替换掉 * 的Hook方法
+type ReplaceSelectStatementPlugin struct {
+	gorm.Plugin
+}
+
+// Name 替换 Select 语句的回调方法
+func (p *ReplaceSelectStatementPlugin) Name() string {
+	return "ReplaceSelectStatementPlugin"
+}
+
+// Initialize 在执行查询之前调用的回调方法
+func (p *ReplaceSelectStatementPlugin) Initialize(db *gorm.DB) (err error) {
+	// 在查询前注册一个钩子
+	return db.Callback().Query().Before("gorm:query").Register("replaceSelectStatement", p.replaceSelectStatement)
+}
+
+// 替换 Select 语句的具体逻辑
+func (p *ReplaceSelectStatementPlugin) replaceSelectStatement(db *gorm.DB) {
+	// 获取表名称
+	if len(db.Statement.Selects) == 0 {
+		db.Statement.Select(db.Statement.Schema.DBNames)
+	}
+}
