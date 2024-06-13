@@ -65,6 +65,12 @@ func (c *Cfg) NewGDB() *gorm.DB {
 		panic("failed to connect database")
 	}
 
+	// 注册插件
+	err = db.Use(&ReplaceSelectStatementPlugin{})
+	if err != nil {
+		panic(err)
+	}
+
 	return db
 }
 
@@ -85,6 +91,12 @@ func MustDB(dsn, logLevel string) *gorm.DB {
 		panic("failed to connect database")
 	}
 
+	// 注册插件
+	err = db.Use(&ReplaceSelectStatementPlugin{})
+	if err != nil {
+		panic(err)
+	}
+
 	return db
 }
 
@@ -101,6 +113,12 @@ func MustGDB(dsn string, l *zap.Logger) *gorm.DB {
 	db, err := gorm.Open(mysql.Open(dsn), cfg)
 	if err != nil {
 		panic("failed to connect database")
+	}
+
+	// 注册插件
+	err = db.Use(&ReplaceSelectStatementPlugin{})
+	if err != nil {
+		panic(err)
 	}
 
 	return db
