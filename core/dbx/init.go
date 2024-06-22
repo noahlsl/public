@@ -115,11 +115,11 @@ func MustGDB(dsn string, l *zap.Logger) *gorm.DB {
 		panic("failed to connect database")
 	}
 
-	//// 注册插件
-	//err = db.Use(&ReplaceSelectStatementPlugin{})
-	//if err != nil {
-	//	panic(err)
-	//}
+	// 注册插件
+	err = db.Use(&ReplaceSelectStatementPlugin{})
+	if err != nil {
+		panic(err)
+	}
 
 	return db
 }

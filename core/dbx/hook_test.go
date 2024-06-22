@@ -40,5 +40,13 @@ func TestHook(t *testing.T) {
 		return
 	}
 
+	//var banks []Bank
+	var count int64
+	err = db.Model(&Bank{}).Where("id > ?", 0).Count(&count).Debug().Error
+	if err != nil {
+		t.Log(err)
+		return
+	}
+
 	fmt.Println("通过")
 }

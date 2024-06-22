@@ -100,7 +100,7 @@ func (p *ReplaceSelectStatementPlugin) Initialize(db *gorm.DB) (err error) {
 // 替换 Select 语句的具体逻辑
 func (p *ReplaceSelectStatementPlugin) replaceSelectStatement(db *gorm.DB) {
 	// 获取表名称
-	if len(db.Statement.Selects) == 0 {
+	if len(db.Statement.Selects) == 0 && len(db.Statement.Clauses) == 0 {
 		db.Statement.Select(db.Statement.Schema.DBNames)
 	}
 }
