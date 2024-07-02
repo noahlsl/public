@@ -2,7 +2,10 @@ package lockx
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/logx"
+	"strconv"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/stores/redis"
@@ -81,4 +84,42 @@ func TryLock(ctx context.Context, r *redis.Redis, key interface{}, maxSecond ...
 	}
 
 	return false
+}
+
+func SendLock(ctx context.Context, r *redis.Redis, key string, exps ...int) bool {
+	// Define the limit
+	var (
+		exp   = 600
+		limit = 3
+	)
+
+	if len(exps) > 0 {
+		exp = exps[0]
+	}
+
+	// Get the current count
+	val, err := r.GetCtx(ctx, key)
+	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			err = r.SetexCtx(ctx, key, "1", exp)
+			if err != nil {
+				logx.Error(err)
+			}
+			return true
+		}
+		logx.Error(err)
+		return false
+	}
+
+	// If value >= limit, return false
+	v, _ := strconv.Atoi(val)
+	if v >= limit {
+		return false
+	}
+
+	_, err = r.Incr(key)
+	if err != nil {
+		logx.Error(err)
+	}
+	return true
 }
