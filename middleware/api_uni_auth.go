@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"fmt"
 	"github.com/noahlsl/public/constants/consts"
 	"github.com/noahlsl/public/constants/enums"
@@ -23,11 +24,13 @@ func (u *UniAuth) Handle(next http.HandlerFunc) http.HandlerFunc {
 		token := r.Header.Get("Authorization")
 		if token != "" {
 			key := fmt.Sprintf(consts.RedisKeyAuth, token)
-			exists, err := u.r.Exists(key)
-			if err != nil || !exists {
+			v, err := u.r.Get(key)
+			if err != nil || v == "" {
 				xhttp.JsonBaseResponseCtx(r.Context(), w, xerrors.New(enums.ErrSysTokenExpired, "Login expired"))
 				return
 			}
+			ctx := context.WithValue(r.Context(), "id", v)
+			r = r.WithContext(ctx)
 		} else {
 			next(w, r)
 		}
@@ -38,11 +41,14 @@ func (u *UniAuth) UniAuthMiddleware(w http.ResponseWriter, r *http.Request) erro
 	token := r.Header.Get("Authorization")
 	if token != "" {
 		key := fmt.Sprintf(consts.RedisKeyAuth, token)
-		exists, err := u.r.Exists(key)
-		if err != nil || !exists {
+		v, err := u.r.Get(key)
+		if err != nil || v == "" {
 			w.WriteHeader(http.StatusUnauthorized)
 			return consts.ErrSysTokenExpired
 		}
+
+		ctx := context.WithValue(r.Context(), "id", v)
+		r = r.WithContext(ctx)
 	}
 
 	return nil

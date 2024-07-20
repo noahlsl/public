@@ -34,7 +34,7 @@ func NewSession(r *redis.Redis, tk, uk, dk string, ex ...int) *Session {
 	}
 }
 
-func (s *Session) Login(ctx context.Context, id interface{}, data interface{}) (string, error) {
+func (s *Session) Login(ctx context.Context, id string, data interface{}) (string, error) {
 
 	var token string
 	// 单点登录
