@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"math"
 	"sync"
 	"time"
 
@@ -16,7 +17,10 @@ const (
 	lockTimeout     = 10 * time.Second
 	renewalInterval = 2 * time.Second
 	maxRenewalCount = 5 // 最大续约次数
-	quorum          = 2 // Number of Redis instances required for quorum
+)
+
+var (
+	quorum int // 成功节点数
 )
 
 // Redis connection pool
@@ -30,6 +34,9 @@ func InitRedLockClients(addresses []string) {
 		})
 		redisClients = append(redisClients, client)
 	}
+
+	// 设置半数节点以上成功即可
+	quorum = int(math.Ceil(float64(len(redisClients)) / float64(quorum)))
 }
 
 // RedLock structure
@@ -42,6 +49,10 @@ type RedLock struct {
 
 // NewRedLock creates a new RedLock instance with the provided lock parameters
 func NewRedLock(lockKey string, timeout time.Duration) *RedLock {
+	if len(redisClients) == 0 {
+		log.Fatalf("redlock clients is empty")
+	}
+
 	return &RedLock{
 		lockKey:         lockKey,
 		lockTimeout:     timeout,
