@@ -6,4 +6,5 @@ type Cfg struct {
 	Username string `json:"username"` // 用户名
 	Password string `json:"password"` // 密码
 	Database string `json:"database"` // 数据库
+	Timeout  int    `json:"timeout"`  // 超时秒
 }
