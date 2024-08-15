@@ -122,7 +122,7 @@ func (c *Client) DelObject(ctx context.Context, names ...string) error {
 // Deprecated: 建议使用 UploadWebp
 // UploadByRequest 上传图片
 // 最大支持 2048 KB，即 2 M
-func (c *Client) UploadByRequest(r *http.Request, prefix string) (string, error) {
+func (c *Client) UploadByRequest(ctx context.Context, r *http.Request, prefix string) (string, error) {
 
 	err := r.ParseMultipartForm(consts.FileMaxSize)
 	if err != nil {
@@ -180,12 +180,12 @@ func (c *Client) UploadByRequest(r *http.Request, prefix string) (string, error)
 			return "", err
 		}
 
-		err = c.Upload(context.Background(), bytes.NewReader(buf.Bytes()), name, int64(buf.Len()))
+		err = c.Upload(ctx, bytes.NewReader(buf.Bytes()), name, int64(buf.Len()))
 		if err != nil {
 			return "", errors.WithStack(err)
 		}
 	} else {
-		err = c.Upload(context.Background(), bytes.NewReader(buf.Bytes()), name, int64(buf.Len()))
+		err = c.Upload(ctx, bytes.NewReader(buf.Bytes()), name, int64(buf.Len()))
 		if err != nil {
 			return "", errors.WithStack(err)
 		}
@@ -195,12 +195,12 @@ func (c *Client) UploadByRequest(r *http.Request, prefix string) (string, error)
 }
 
 // UploadWebp 上次文件
-func (c *Client) UploadWebp(r *http.Request, prefix string) (string, error) {
-	return c.UploadByRequest(r, prefix)
+func (c *Client) UploadWebp(ctx context.Context, r *http.Request, prefix string) (string, error) {
+	return c.UploadByRequest(ctx, r, prefix)
 }
 
 // UploadFile 上次文件
-func (c *Client) UploadFile(r *http.Request, prefix string) (string, error) {
+func (c *Client) UploadFile(ctx context.Context, r *http.Request, prefix string) (string, error) {
 
 	err := r.ParseMultipartForm(consts.FileMaxSize)
 	if err != nil {
@@ -224,7 +224,7 @@ func (c *Client) UploadFile(r *http.Request, prefix string) (string, error) {
 	}
 
 	c.ContentType = consts.FileType
-	err = c.Upload(context.Background(), file, name, head.Size)
+	err = c.Upload(ctx, file, name, head.Size)
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
