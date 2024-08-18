@@ -41,8 +41,8 @@ func (s *Set[T]) IsIn(key T) bool {
 	return ok
 }
 
-// IsNil 判断是否为空
-func (s *Set[T]) IsNil(key T) bool {
+// IsEmpty 判断是否为空
+func (s *Set[T]) IsEmpty() bool {
 	return len(s.val) == 0
 }
 
