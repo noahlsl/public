@@ -3,6 +3,7 @@ package dbx
 import (
 	"database/sql"
 	"fmt"
+	"github.com/doug-martin/goqu/v9"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/jmoiron/sqlx"
@@ -42,6 +43,10 @@ func NewDB(dsn string) *sqlx.DB {
 		panic(err)
 	}
 	return sqlx.NewDb(db, "mysql")
+}
+
+func NewGoQu(dsn string) *goqu.Database {
+	return goqu.New("mysql", NewDB(dsn))
 }
 
 func (c *Cfg) NewGDB() *gorm.DB {
