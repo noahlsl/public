@@ -4,19 +4,15 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"image"
-	"image/gif"
-	"image/jpeg"
-	"image/png"
+
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
 
-	"github.com/chai2010/webp"
+	"github.com/h2non/bimg"
 	"github.com/minio/minio-go/v7"
-	"github.com/nfnt/resize"
 	"github.com/noahlsl/public/constants/consts"
 	"github.com/noahlsl/public/helper/idx"
 	"github.com/pkg/errors"
@@ -148,47 +144,49 @@ func (c *Client) UploadByRequest(ctx context.Context, r *http.Request, prefix st
 	}
 
 	// 获取图片格式
-	mimeType := http.DetectContentType(imageData)
-	var img image.Image
-	switch mimeType {
-	case "image/jpeg", "image/jpg":
-		img, err = jpeg.Decode(bytes.NewReader(imageData))
-	case "image/png":
-		img, err = png.Decode(bytes.NewReader(imageData))
-	case "image/gif":
-		img, err = gif.Decode(bytes.NewReader(imageData))
-	default:
-		return "", fmt.Errorf("unsupported image format: %s", mimeType)
-	}
+	//mimeType := http.DetectContentType(imageData)
+	//var img image.Image
+	//switch mimeType {
+	//case "image/jpeg", "image/jpg":
+	//	img, err = jpeg.Decode(bytes.NewReader(imageData))
+	//case "image/png":
+	//	img, err = png.Decode(bytes.NewReader(imageData))
+	//case "image/gif":
+	//	img, err = gif.Decode(bytes.NewReader(imageData))
+	//case "image/webp":
+	//	return c.UploadFile(ctx, r, prefix)
+	//default:
+	//	return "", fmt.Errorf("unsupported image format: %s", mimeType)
+	//}
 
-	if err != nil {
-		return "", err
-	}
+	//if err != nil {
+	//	return "", err
+	//}
 
 	// 压缩图片
-	resizedImg := resize.Resize(0, 0, img, resize.Lanczos3)
+	//resizedImg := resize.Resize(0, 0, img, resize.Lanczos3)
 
 	// 创建缓冲区
-	var buf bytes.Buffer
+	//var buf bytes.Buffer
 	// 将压缩后的图片转换为 WebP 格式并保存到缓冲区
-	err = webp.Encode(&buf, resizedImg, &webp.Options{Quality: 90})
+	// 设置转换选项
+	options := bimg.Options{
+		Quality: 85, // 设置图像质量
+		Type:    bimg.WEBP,
+	}
+	// 创建 bimg.Image 对象
+	img1 := bimg.NewImage(imageData)
+	// 进行转换
+	newImage, err := img1.Process(options)
 	if err != nil {
-		var buf bytes.Buffer
-		// 编码图像为JPEG格式，并将其写入到字节缓冲区中
-		err = jpeg.Encode(&buf, img, nil)
-		if err != nil {
-			return "", err
-		}
+		panic(err)
+	}
 
-		err = c.Upload(ctx, bytes.NewReader(buf.Bytes()), name, int64(buf.Len()))
-		if err != nil {
-			return "", errors.WithStack(err)
-		}
-	} else {
-		err = c.Upload(ctx, bytes.NewReader(buf.Bytes()), name, int64(buf.Len()))
-		if err != nil {
-			return "", errors.WithStack(err)
-		}
+	// 将转换后的图像数据写入 bytes.Buffer
+	buf := bytes.NewBuffer(newImage)
+	err = c.Upload(ctx, bytes.NewReader(buf.Bytes()), name, int64(buf.Len()))
+	if err != nil {
+		return "", errors.WithStack(err)
 	}
 
 	return name, nil

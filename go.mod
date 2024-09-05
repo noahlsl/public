@@ -6,7 +6,6 @@ require (
 	github.com/apache/pulsar-client-go v0.12.1
 	github.com/apache/rocketmq-client-go/v2 v2.1.2
 	github.com/bytedance/sonic v1.11.6
-	github.com/chai2010/webp v1.1.1
 	github.com/doug-martin/goqu/v9 v9.19.0
 	github.com/elastic/go-elasticsearch/v7 v7.17.10
 	github.com/ghodss/yaml v1.0.0
@@ -17,6 +16,7 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang-module/dongle v0.2.8
 	github.com/google/uuid v1.6.0
+	github.com/h2non/bimg v1.1.9
 	github.com/huaweicloud/huaweicloud-sdk-go-obs v3.23.12+incompatible
 	github.com/jinzhu/gorm v1.9.16
 	github.com/jmoiron/sqlx v1.3.5
