@@ -26,7 +26,6 @@ require (
 	github.com/minio/minio-go/v7 v7.0.69
 	github.com/nacos-group/nacos-sdk-go v1.1.4
 	github.com/nats-io/nats.go v1.34.1
-	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/noahlsl/rocketmq v0.0.0-20230616160243-ec2c42401f0e
 	github.com/panjf2000/ants/v2 v2.9.1
 	github.com/pkg/errors v0.9.1
