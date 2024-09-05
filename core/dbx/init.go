@@ -35,24 +35,12 @@ func (c *Cfg) NewClient() zeroSqlx.SqlConn {
 	return zeroSqlx.NewSqlConnFromDB(db)
 }
 
-func (c *Cfg) NewDB() *sqlx.DB {
-
-	dsn := c.DataSource()
-	db, err := sql.Open("mysql",
-		dsn)
+func NewDB(dsn string) *sqlx.DB {
+	db, err := sql.Open("mysql", dsn)
 
 	if err != nil {
 		panic(err)
 	}
-	if c.MaxOpen == 0 {
-		c.MaxOpen = 20
-	}
-	if c.MaxIdle == 0 {
-		c.MaxIdle = 10
-	}
-	db.SetMaxOpenConns(c.MaxOpen)
-	db.SetMaxIdleConns(c.MaxIdle)
-
 	return sqlx.NewDb(db, "mysql")
 }
 

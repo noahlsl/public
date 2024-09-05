@@ -14,8 +14,8 @@ type Client struct {
 	g  goqu.DialectWrapper
 }
 
-func NewClient(dsn string, poolSize ...int) *Client {
-	db := dbx.MustDB(dsn, poolSize...)
+func NewClient(dsn string) *Client {
+	db := dbx.NewDB(dsn)
 	g := goqu.Dialect("mysql")
 	return &Client{
 		db: db,
