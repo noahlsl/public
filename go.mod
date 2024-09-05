@@ -7,7 +7,6 @@ require (
 	github.com/apache/rocketmq-client-go/v2 v2.1.2
 	github.com/bytedance/sonic v1.11.6
 	github.com/doug-martin/goqu/v9 v9.19.0
-	github.com/elastic/go-elasticsearch/v7 v7.17.10
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-playground/validator/v10 v10.19.0
 	github.com/go-redis/redis/v8 v8.11.5
@@ -26,6 +25,7 @@ require (
 	github.com/nacos-group/nacos-sdk-go v1.1.4
 	github.com/nats-io/nats.go v1.34.1
 	github.com/noahlsl/rocketmq v0.0.0-20230616160243-ec2c42401f0e
+	github.com/olivere/elastic/v7 v7.0.32
 	github.com/panjf2000/ants/v2 v2.9.1
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.32.0
@@ -101,7 +101,7 @@ require (
 	github.com/iancoleman/strcase v0.2.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/jmespath/go-jmespath v0.3.0 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.17.6 // indirect
