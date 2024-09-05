@@ -46,6 +46,9 @@ func NewDB(dsn string) *sqlx.DB {
 }
 
 func NewGoQu(dsn string) *goqu.Database {
+	if dsn == "" {
+		return goqu.New("mysql", nil)
+	}
 	return goqu.New("mysql", NewDB(dsn))
 }
 
