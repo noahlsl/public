@@ -1,17 +1,14 @@
 package miniox
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
 
-	"github.com/h2non/bimg"
 	"github.com/minio/minio-go/v7"
 	"github.com/noahlsl/public/constants/consts"
 	"github.com/noahlsl/public/helper/idx"
@@ -120,30 +117,32 @@ func (c *Client) DelObject(ctx context.Context, names ...string) error {
 // 最大支持 2048 KB，即 2 M
 func (c *Client) UploadByRequest(ctx context.Context, r *http.Request, prefix string) (string, error) {
 
-	err := r.ParseMultipartForm(consts.FileMaxSize)
-	if err != nil {
-		return "", err
-	}
+	return c.UploadFile(ctx, r, prefix)
 
-	file, _, err := r.FormFile("file")
-	if err != nil {
-		return "", err
-	}
-
-	defer file.Close()
-	name := idx.GenUUID()
-	if prefix != "" {
-		name = prefix + "/" + name
-	}
-	name += ".webp"
-
-	// 读取响应体内容
-	imageData, err := io.ReadAll(file)
-	if err != nil {
-		return "", err
-	}
-
-	// 获取图片格式
+	//err := r.ParseMultipartForm(consts.FileMaxSize)
+	//if err != nil {
+	//	return "", err
+	//}
+	//
+	//file, _, err := r.FormFile("file")
+	//if err != nil {
+	//	return "", err
+	//}
+	//
+	//defer file.Close()
+	//name := idx.GenUUID()
+	//if prefix != "" {
+	//	name = prefix + "/" + name
+	//}
+	//name += ".webp"
+	//
+	//// 读取响应体内容
+	//imageData, err := io.ReadAll(file)
+	//if err != nil {
+	//	return "", err
+	//}
+	//
+	//// 获取图片格式
 	//mimeType := http.DetectContentType(imageData)
 	//var img image.Image
 	//switch mimeType {
@@ -158,38 +157,30 @@ func (c *Client) UploadByRequest(ctx context.Context, r *http.Request, prefix st
 	//default:
 	//	return "", fmt.Errorf("unsupported image format: %s", mimeType)
 	//}
-
 	//if err != nil {
 	//	return "", err
 	//}
-
-	// 压缩图片
+	//
+	//// 压缩图片
 	//resizedImg := resize.Resize(0, 0, img, resize.Lanczos3)
-
-	// 创建缓冲区
+	//
+	//// 创建缓冲区
 	//var buf bytes.Buffer
-	// 将压缩后的图片转换为 WebP 格式并保存到缓冲区
-	// 设置转换选项
-	options := bimg.Options{
-		Quality: 85, // 设置图像质量
-		Type:    bimg.WEBP,
-	}
-	// 创建 bimg.Image 对象
-	img1 := bimg.NewImage(imageData)
-	// 进行转换
-	newImage, err := img1.Process(options)
-	if err != nil {
-		panic(err)
-	}
-
-	// 将转换后的图像数据写入 bytes.Buffer
-	buf := bytes.NewBuffer(newImage)
-	err = c.Upload(ctx, bytes.NewReader(buf.Bytes()), name, int64(buf.Len()))
-	if err != nil {
-		return "", errors.WithStack(err)
-	}
-
-	return name, nil
+	//// 编码为 WebP 格式
+	//err = webp.Encode(&buf, img, nil)
+	//if err != nil {
+	//	fmt.Println("Error encoding image to WebP:", err)
+	//	return
+	//}
+	//
+	//// 将转换后的图像数据写入 bytes.Buffer
+	//buf := bytes.NewBuffer(newImage)
+	//err = c.Upload(ctx, bytes.NewReader(buf.Bytes()), name, int64(buf.Len()))
+	//if err != nil {
+	//	return "", errors.WithStack(err)
+	//}
+	//
+	//return name, nil
 }
 
 // UploadWebp 上次文件
