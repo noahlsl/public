@@ -11,7 +11,7 @@ func (c *Cfg) NewClient() *es.Client {
 	var urls []string
 	for _, addr := range c.Address {
 		url := fmt.Sprintf("http://%s", addr)
-		if c.TLS != 0 {
+		if c.TLS {
 			url = fmt.Sprintf("https://%s", addr)
 		}
 		urls = append(urls, url)
