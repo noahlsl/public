@@ -16,15 +16,22 @@ import (
 )
 
 type Ses struct {
-	r      *redis.Redis
-	expire int64 // 过期时间秒
+	r         *redis.Redis
+	expire    int64 // 过期时间秒
+	maxLogins int   // 最大登录数量
 }
 
 func NewSes(r *redis.Redis, expire int64) *Ses {
 	return &Ses{
-		r:      r,
-		expire: expire,
+		maxLogins: 5,
+		r:         r,
+		expire:    expire,
 	}
+}
+
+func (s *Ses) WithMaxLogins(max int) *Ses {
+	s.maxLogins = max
+	return s
 }
 
 type LoginData struct {
@@ -62,6 +69,29 @@ func (s *Ses) Login(ctx context.Context, secret string, id string, values ...any
 		Token: token,
 		Data:  val,
 	}
+	count, err := s.r.ZcardCtx(ctx, key)
+	if err != nil {
+		return "", err
+	}
+
+	if count >= s.maxLogins {
+		var stop = count - s.maxLogins
+		if stop > 0 {
+			stop -= 1
+		}
+		result, err := s.r.ZrangeCtx(ctx, key, 0, int64(stop))
+		if err != nil {
+			return "", err
+		}
+
+		for _, v := range result {
+			_, err = s.r.ZremCtx(ctx, key, v)
+			if err != nil {
+				return "", err
+			}
+		}
+	}
+
 	_, err = s.r.ZaddCtx(ctx, key, score, structx.StructToStr(value))
 	if err != nil {
 		return "", err
