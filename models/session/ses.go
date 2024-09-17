@@ -135,3 +135,24 @@ func (s *Ses) Logout(ctx context.Context, token string) error {
 
 	return nil
 }
+
+// KickOff 用户踢线,全部登录的地方都踢下线
+func (s *Ses) KickOff(ctx context.Context, id string) error {
+	key := fmt.Sprintf(consts.RedisKeyUserLogin, id)
+	result, err := s.r.ZrangeCtx(ctx, key, 0, -1)
+	if err != nil && !errors.Is(err, redis.Nil) {
+		return err
+	}
+
+	for _, v := range result {
+		authKey := fmt.Sprintf(consts.RedisKeyAuth, v)
+		_, err = s.r.DelCtx(ctx, authKey)
+		if err != nil {
+			logx.Error(err)
+		}
+	}
+
+	_, err = s.r.DelCtx(ctx, key)
+
+	return err
+}
