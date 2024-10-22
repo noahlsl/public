@@ -3,6 +3,8 @@ package dbx
 import (
 	"database/sql"
 	"fmt"
+	"time"
+
 	"github.com/doug-martin/goqu/v9"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -12,6 +14,7 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/plugin/dbresolver"
 	"moul.io/zapgorm2"
 )
 
@@ -113,6 +116,58 @@ func MustGDB(dsn string, l *zap.Logger) *gorm.DB {
 
 	// 注册插件
 	err = db.Use(&ReplaceSelectStatementPlugin{})
+	if err != nil {
+		panic(err)
+	}
+
+	return db
+}
+
+// SetUpDB 根据传入的数据库配置初始化连接
+func SetUpDB(config DatabaseConfig) *gorm.DB {
+	// 连接主库
+	db, err := gorm.Open(mysql.Open(config.MasterDSN), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+
+	// 配置 resolver 插件，动态设置从库和策略
+	resolverConfig := dbresolver.Config{
+		Replicas: make([]gorm.Dialector, len(config.ReplicaDSNs)),
+		Policy:   config.Policy, // 使用外部传入的策略
+	}
+
+	// 将从库 DSN 转换为 gorm 的 Dialectic 类型
+	for i, dsn := range config.ReplicaDSNs {
+		resolverConfig.Replicas[i] = mysql.Open(dsn)
+	}
+
+	// 注册 resolver
+	resolver := dbresolver.Register(resolverConfig)
+
+	// 使用默认值或外部传入的值配置连接池
+	if config.ConnMaxIdleTime != nil {
+		resolver.SetConnMaxIdleTime(*config.ConnMaxIdleTime)
+	} else {
+		resolver.SetConnMaxIdleTime(10 * time.Minute) // 默认值
+	}
+	if config.ConnMaxLifetime != nil {
+		resolver.SetConnMaxLifetime(*config.ConnMaxLifetime)
+	} else {
+		resolver.SetConnMaxLifetime(1 * time.Hour) // 默认值
+	}
+	if config.MaxIdleConn != nil {
+		resolver.SetMaxIdleConns(*config.MaxIdleConn)
+	} else {
+		resolver.SetMaxIdleConns(10) // 默认值
+	}
+	if config.MaxOpenConn != nil {
+		resolver.SetMaxOpenConns(*config.MaxOpenConn)
+	} else {
+		resolver.SetMaxOpenConns(100) // 默认值
+	}
+
+	err = db.Use(resolver)
 	if err != nil {
 		panic(err)
 	}
