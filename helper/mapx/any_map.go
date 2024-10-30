@@ -31,8 +31,8 @@ func (s *AnyMap) Get(key string) (any, error) {
 }
 
 func (s *AnyMap) Del(key string) {
-	s.RLock()
-	defer s.RUnlock()
+	s.Lock()
+	defer s.Unlock()
 	delete(s.m, key)
 }
 
@@ -59,16 +59,20 @@ func (s *AnyMap) Exist(key string) bool {
 }
 
 func (s *AnyMap) Empty() {
-	s.RLock()
-	defer s.RUnlock()
+	s.Lock()
+	defer s.Unlock()
 	s.m = make(map[string]any)
 }
 
 func (s *AnyMap) Range() map[string]any {
+	s.RLock()
+	defer s.RUnlock()
 	return s.m
 }
 
 func (s *AnyMap) Keys() []string {
+	s.RLock()
+	defer s.RUnlock()
 	var keys []string
 	for k := range s.m {
 		keys = append(keys, k)
@@ -78,14 +82,12 @@ func (s *AnyMap) Keys() []string {
 }
 
 func (s *AnyMap) Values() any {
+	s.RLock()
+	defer s.RUnlock()
 	var values []any
 	for _, v := range s.m {
 		values = append(values, v)
 	}
 
 	return values
-}
-
-func (s *AnyMap) All() map[string]any {
-	return s.m
 }

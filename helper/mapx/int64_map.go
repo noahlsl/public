@@ -33,8 +33,8 @@ func (s *Int64Map[T]) Get(key int64) (T, error) {
 }
 
 func (s *Int64Map[T]) Del(key int64) {
-	s.RLock()
-	defer s.RUnlock()
+	s.Lock()
+	defer s.Unlock()
 	delete(s.m, key)
 }
 
@@ -60,16 +60,20 @@ func (s *Int64Map[T]) Exist(key int64) bool {
 	return false
 }
 func (s *Int64Map[T]) Empty() {
-	s.RLock()
-	defer s.RUnlock()
+	s.Lock()
+	defer s.Unlock()
 	s.m = make(map[int64]T)
 }
 
 func (s *Int64Map[T]) Range() map[int64]T {
+	s.RLock()
+	defer s.RUnlock()
 	return s.m
 }
 
 func (s *Int64Map[T]) Keys() []int64 {
+	s.RLock()
+	defer s.RUnlock()
 	var keys []int64
 	for k := range s.m {
 		keys = append(keys, k)
@@ -79,6 +83,8 @@ func (s *Int64Map[T]) Keys() []int64 {
 }
 
 func (s *Int64Map[T]) Values() []T {
+	s.RLock()
+	defer s.RUnlock()
 	var values []T
 	for _, v := range s.m {
 		values = append(values, v)

@@ -38,8 +38,8 @@ func (s *StrMap[T]) Get(key string) (T, error) {
 }
 
 func (s *StrMap[T]) Del(key string) {
-	s.RLock()
-	defer s.RUnlock()
+	s.Lock()
+	defer s.Unlock()
 	delete(s.m, key)
 }
 
@@ -66,16 +66,20 @@ func (s *StrMap[T]) Exist(key string) bool {
 }
 
 func (s *StrMap[T]) Empty() {
-	s.RLock()
-	defer s.RUnlock()
+	s.Lock()
+	defer s.Unlock()
 	s.m = make(map[string]T)
 }
 
 func (s *StrMap[T]) Range() map[string]T {
+	s.RLock()
+	defer s.RUnlock()
 	return s.m
 }
 
 func (s *StrMap[T]) Keys() []string {
+	s.RLock()
+	defer s.RUnlock()
 	var keys []string
 	for k := range s.m {
 		keys = append(keys, k)
@@ -85,6 +89,8 @@ func (s *StrMap[T]) Keys() []string {
 }
 
 func (s *StrMap[T]) Values() []T {
+	s.RLock()
+	defer s.RUnlock()
 	var values []T
 	for _, v := range s.m {
 		values = append(values, v)

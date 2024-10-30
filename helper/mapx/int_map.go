@@ -20,8 +20,8 @@ func (s *IntMap[T]) Set(key int, value T) {
 }
 
 func (s *IntMap[T]) Del(key int) {
-	s.RLock()
-	defer s.RUnlock()
+	s.Lock()
+	defer s.Unlock()
 	delete(s.m, key)
 }
 
@@ -59,16 +59,20 @@ func (s *IntMap[T]) Exist(key int) bool {
 }
 
 func (s *IntMap[T]) Empty() {
-	s.RLock()
-	defer s.RUnlock()
+	s.Lock()
+	defer s.Unlock()
 	s.m = make(map[int]T)
 }
 
 func (s *IntMap[T]) Range() map[int]T {
+	s.RLock()
+	defer s.RUnlock()
 	return s.m
 }
 
 func (s *IntMap[T]) Keys() []int {
+	s.RLock()
+	defer s.RUnlock()
 	var keys []int
 	for k := range s.m {
 		keys = append(keys, k)
@@ -78,6 +82,8 @@ func (s *IntMap[T]) Keys() []int {
 }
 
 func (s *IntMap[T]) Values() []T {
+	s.RLock()
+	defer s.RUnlock()
 	var values []T
 	for _, v := range s.m {
 		values = append(values, v)
