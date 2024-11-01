@@ -81,7 +81,7 @@ func (c *Cfg) DataSource() string {
 
 func MustDB(dsn, logLevel string) *gorm.DB {
 	logger := zapgorm2.New(zap.L())
-	logger.SlowThreshold = time.Second
+	logger.SlowThreshold = 500 * time.Millisecond
 	switch logLevel {
 	case "warn":
 		logger.LogLevel = gormlogger.Warn
@@ -112,7 +112,7 @@ func MustGDB(dsn string, l *zap.Logger) *gorm.DB {
 	cfg := &gorm.Config{}
 	if l != nil {
 		logger := zapgorm2.New(l)
-		logger.SlowThreshold = time.Second
+		logger.SlowThreshold = 500 * time.Millisecond
 		logger.LogLevel = gormlogger.Error
 		logger.SetAsDefault()
 		cfg = &gorm.Config{
