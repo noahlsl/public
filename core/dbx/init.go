@@ -9,11 +9,11 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/jmoiron/sqlx"
-	"github.com/noahlsl/public/helper/loggerx"
 	zeroSqlx "github.com/zeromicro/go-zero/core/stores/sqlx"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	gormlogger "gorm.io/gorm/logger"
 	"gorm.io/plugin/dbresolver"
 	"moul.io/zapgorm2"
 )
@@ -80,11 +80,20 @@ func (c *Cfg) DataSource() string {
 }
 
 func MustDB(dsn, logLevel string) *gorm.DB {
-
-	log := loggerx.New(logLevel)
+	logger := zapgorm2.New(zap.L())
+	logger.SlowThreshold = time.Second
+	switch logLevel {
+	case "warn":
+		logger.LogLevel = gormlogger.Warn
+	case "info":
+		logger.LogLevel = gormlogger.Info
+	default:
+		logger.LogLevel = gormlogger.Error
+	}
+	logger.SetAsDefault()
 	// 打开 MySQL 数据库连接。
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: log,
+		Logger: logger,
 	})
 	if err != nil {
 		panic("failed to connect database")
@@ -103,6 +112,8 @@ func MustGDB(dsn string, l *zap.Logger) *gorm.DB {
 	cfg := &gorm.Config{}
 	if l != nil {
 		logger := zapgorm2.New(l)
+		logger.SlowThreshold = time.Second
+		logger.LogLevel = gormlogger.Error
 		logger.SetAsDefault()
 		cfg = &gorm.Config{
 			Logger: logger,
