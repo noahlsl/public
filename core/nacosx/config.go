@@ -7,38 +7,43 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/vo"
 )
 
-type Conf struct {
-	Host     string
-	Port     uint64
-	Username string
-	Password string
+type NcConf struct {
+	Addr        string
+	Port        uint64
+	Group       string
+	DataID      string
+	ExtDataIDs  []string `json:",optional"`
+	NamespaceID string
+	Username    string
+	Password    string
+	LogLevel    string
 }
 
-func NewConf(address string) *Conf {
-	return &Conf{
-		Host: address,
+func NewConf(address string) *NcConf {
+	return &NcConf{
+		Addr: address,
 		Port: 8848,
 	}
 }
 
-func (c *Conf) WithPort(port uint64) *Conf {
+func (c *NcConf) WithPort(port uint64) *NcConf {
 	c.Port = port
 	return c
 }
 
-func (c *Conf) WithUsername(username string) *Conf {
+func (c *NcConf) WithUsername(username string) *NcConf {
 	c.Username = username
 	return c
 }
 
-func (c *Conf) WithPassword(password string) *Conf {
+func (c *NcConf) WithPassword(password string) *NcConf {
 	c.Password = password
 	return c
 }
 
-func (c *Conf) NewConfigClient() config_client.IConfigClient {
+func (c *NcConf) NewConfigClient() config_client.IConfigClient {
 	sc := []constant.ServerConfig{{
-		IpAddr: c.Host,
+		IpAddr: c.Addr,
 		Port:   c.Port,
 	}}
 

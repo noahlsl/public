@@ -117,7 +117,7 @@ func SendLock(ctx context.Context, r *redis.Redis, key string, exps ...int) bool
 		return false
 	}
 
-	_, err = r.Incr(key)
+	_, err = r.IncrCtx(ctx, key)
 	if err != nil {
 		logx.Error(err)
 	}
